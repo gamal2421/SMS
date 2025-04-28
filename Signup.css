@@ -1,0 +1,152 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: hsla(293, 100%, 27%, 0.116); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+} 
+
+.auth-container {
+  display:flex;
+  max-width: 1400px;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 100%;
+  /* position: fixed; */
+  transition: 1.5s;
+}
+
+.auth-image {
+  flex: 0.9;
+  /* background: linear-gradient(135deg, hsla(293, 100%, 27%, 0.493), #7a00df, hsla(293, 100%, 27%, 0.493)); */
+  display: flex;
+  background-image: url('WhatsApp Image 2025-04-27 at 13.32.37_dd55543d.jpg');
+  background-repeat: no-repeat;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding: 40px;
+  /* width: 100%; */
+  /* max-width: 400px;
+  object-fit: contain; */
+}
+
+.auth-image h3 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  background-color: #7a00df;
+    opacity: 0.9;
+  color:white ;
+}
+
+.auth-image p {
+  font-size: 16px;
+}
+
+.auth-form {
+  flex: 1;
+  padding: 40px;
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.auth-tab {
+  padding: 12px 25px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #7f8c8d;
+  transition: all 0.3s;
+}
+
+.auth-tab.active {
+  color: #7a00df;
+  border-bottom: 3px solid #7a00df;
+  margin-bottom: -1px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #34495e;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 40px 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border 0.3s;
+}
+
+.form-group input:focus {
+  border-color:#7a00df;
+  outline: none;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 38px;
+  cursor: pointer;
+  color: #7f8c8d;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background-color:#7a00df;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #6c00c4;
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.form-footer a {
+  color: #7a00df;
+  text-decoration: none;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}

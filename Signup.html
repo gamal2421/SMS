@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="Signup.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-image">
+      <!-- <div>
+        <h3> School Management System </h3>
+      </div> -->
+    </div>
+    <div class="auth-form">
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-tab="login">Log in</div>
+        <div class="auth-tab" data-tab="register">Sign up</div>
+      </div>
+      <div id="login" class="tab-content active">
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="Enter email" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="login-password" placeholder="Enter password" required>
+              <i class="far fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+            </div>
+          </div>
+          <button type="submit" class="submit-btn">Log in</button>
+          <div class="form-footer">
+            <a href="#">Forgot Password?</a>
+          </div>
+        </form>
+      </div>
+      <div id="register" class="tab-content">
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="register-name">Full Name</label>
+            <input type="text" id="register-name" placeholder="Enter full name" required>
+          </div>
+          <div class="form-group">
+            <label for="register-email">Email</label>
+            <input type="email" id="register-email" placeholder="Enter email" required>
+          </div>
+          <div class="form-group">
+            <label for="register-password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="register-password" placeholder="Create Password" required>
+              <i class="far fa-eye password-toggle" onclick="togglePassword('register-password', this)"></i>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="register-confirm">Confirm Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="register-confirm" placeholder="Re-enter Password" required>
+              <i class="far fa-eye password-toggle" onclick="togglePassword('register-confirm', this)"></i>
+            </div>
+          </div>
+          <button type="submit" class="submit-btn">Create Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+  <script>
+    const authTabs = document.querySelectorAll('.auth-tab');
+    authTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        authTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const tabId = tab.getAttribute('data-tab');
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+    function togglePassword(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      console.log('Login', { email, password });
+      alert('Successful Login!');
+    });
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirm = document.getElementById('register-confirm').value;
+      if (password !== confirm) {
+        alert('Passwords do not match!');
+        return;
+      }
+      console.log('Account Created:', { name, email, password });
+      alert('Account created successfully!');
+    });
+  </script>
+</body>
+</html>
