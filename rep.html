@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Principal Dashboard | Fun School</title>
+    <link rel="stylesheet" href="css/rep.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🏫</text></svg>">
+
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-school"></i>
+            <span>ADMIN DASHBOARD</span>
+        </div>
+        <div class="user-profile">
+            <div class="user-avatar">AP</div>
+            <span>Admin</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('attendanceReports')">
+                <i class="fas fa-user-check"></i> Attendance Reports
+            </button>
+            <button class="tab-btn" onclick="openTab('academicPerformanceReports')">
+                <i class="fas fa-chart-line"></i> Academic Performance
+            </button>
+            <button class="tab-btn" onclick="openTab('teacherPerformanceReports')">
+                <i class="fas fa-chalkboard-teacher"></i> Teacher Performance
+            </button>
+        </div>
+
+        <!-- Attendance Reports Tab -->
+        <div id="attendanceReports" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-user-check"></i> Attendance Reports</h2>
+                </div>
+                <div class="input-field">
+                    <select id="attendanceClass">
+                        <option value="">Select Class</option>
+                        <option value="class1">Class 1</option>
+                        <option value="class2">Class 2</option>
+                        <option value="class3">Class 3</option>
+                    </select>
+                </div>
+                <div class="input-field">
+                    <select id="attendanceSection">
+                        <option value="">Select Section</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
+                <div class="input-field">
+                    <input type="date" id="attendanceDate" />
+                </div>
+                <div class="export-buttons">
+                    <button class="export-button" onclick="exportAttendance('PDF')">Export PDF</button>
+                    <button class="export-button" onclick="exportAttendance('Excel')">Export Excel</button>
+                </div>
+                <table class="table" id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Attendance records will go here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Academic Performance Reports Tab -->
+        <div id="academicPerformanceReports" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chart-bar"></i> Academic Performance</h2>
+                </div>
+                <div class="input-field">
+                    <select id="performanceSubject">
+                        <option value="">Select Subject</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                    </select>
+                </div>
+                <div class="input-field">
+                    <input type="date" id="performanceDate" />
+                </div>
+                <div class="export-buttons">
+                    <button class="export-button" onclick="exportPerformance('PDF')">Export PDF</button>
+                    <button class="export-button" onclick="exportPerformance('Excel')">Export Excel</button>
+                </div>
+                <table class="table" id="performanceTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Subject</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Performance records will go here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Teacher Performance Reports Tab -->
+        <div id="teacherPerformanceReports" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chalkboard-teacher"></i> Teacher Performance</h2>
+                </div>
+                <table class="table" id="teacherPerformanceTable">
+                    <thead>
+                        <tr>
+                            <th>Teacher Name</th>
+                            <th>Attendance</th>
+                            <th>Syllabus Completion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Teacher performance records will go here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+     <script src="js/rep.js"></script>
+   
+</body>
+</html>

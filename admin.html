@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Fun School</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🛠️</text></svg>">
+    <style>
+        :root {
+            --purple-dark: #6a0dad;
+            --purple-light: #9c27b0;
+            --gold: #be9415;
+            --white: #ffffff;
+            --pink: #ff6b9d;
+            --teal: #4ecdc4;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            font-family: cursive;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Neue', cursive, sans-serif;
+        }
+
+        body {
+            font-family: cursive;
+            background-color: #f9f3ff;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+            color: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23ffffff20" d="M30,10 Q50,0 70,10 T90,30 Q100,50 90,70 T70,90 Q50,100 30,90 T10,70 Q0,50 10,30 T30,10"/></svg>');
+            background-size: contain;
+            opacity: 0.3;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            border: 3px solid white;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            background-color: white;
+            color: var(--purple-dark);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background-color: var(--purple-dark);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: #e9d5ff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px dashed #e0c6ff;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--purple-dark);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--gold);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f0e5ff;
+        }
+
+        .table th {
+            background-color: #f5edff;
+            color: var(--purple-dark);
+            font-weight: bold;
+        }
+
+        .table tr:hover {
+            background-color: #faf5ff;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .badge-gold {
+            background-color: #fff8e1;
+            color: var(--gold);
+        }
+
+        .badge-purple {
+            background-color: #f3e5f5;
+            color: var(--purple-dark);
+        }
+
+        .input-field {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .input-field input, .input-field select, .input-field textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .submit-button {
+            padding: 10px 15px;
+            background-color: var(--purple-dark);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: var(--purple-light);
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-user-shield"></i>
+            <span>ADMIN DASHBOARD</span>
+        </div>
+        <div class="user-profile">
+            <div class="user-avatar">AD</div>
+            <span>Admin</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('userManagement')">
+                <i class="fas fa-users"></i> User Management
+            </button>
+            <button class="tab-btn" onclick="openTab('classManagement')">
+                <i class="fas fa-chalkboard"></i> Class Management
+            </button>
+            <button class="tab-btn" onclick="openTab('subjectManagement')">
+                <i class="fas fa-book-open"></i> Subject Management
+            </button>
+            <button class="tab-btn" onclick="openTab('scheduleManagement')">
+                <i class="fas fa-calendar-alt"></i> Schedule Management
+            </button>
+            <button class="tab-btn" onclick="openTab('holidayEvent')">
+                <i class="fas fa-calendar-check"></i> Holiday & Events
+            </button>
+        </div>
+
+        <!-- User Management Tab -->
+        <div id="userManagement" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-users"></i> User Management</h2>
+                </div>
+                <form onsubmit="manageUser(event)">
+                    <div class="input-field">
+                        <input type="text" id="username" placeholder="Username" required />
+                    </div>
+                    <div class="input-field">
+                        <input type="text" id="email" placeholder="Email" required />
+                    </div>
+                    <div class="input-field">
+                        <select id="role" required>
+                            <option value="">Select Role</option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Student">Student</option>
+                            <option value="Parent">Parent</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-button">Create/Update User</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Class Management Tab -->
+        <div id="classManagement" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chalkboard"></i> Class & Section Management</h2>
+                </div>
+                <form onsubmit="manageClass(event)">
+                    <div class="input-field">
+                        <input type="text" id="className" placeholder="Class Name (e.g., Grade 1)" required />
+                    </div>
+                    <div class="input-field">
+                        <input type="text" id="section" placeholder="Section (e.g., A/B/C)" required />
+                    </div>
+                    <button type="submit" class="submit-button">Add/Edit Class</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Subject Management Tab -->
+        <div id="subjectManagement" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-book-open"></i> Subject Management</h2>
+                </div>
+                <form onsubmit="manageSubject(event)">
+                    <div class="input-field">
+                        <input type="text" id="subjectName" placeholder="Subject Name" required />
+                    </div>
+                    <div class="input-field">
+                        <input type="text" id="classAssign" placeholder="Assign to Class (e.g., Grade 1)" required />
+                    </div>
+                    <button type="submit" class="submit-button">Add Subject</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Schedule Management Tab -->
+        <div id="scheduleManagement" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Schedule Management</h2>
+                </div>
+                <form onsubmit="manageSchedule(event)">
+                    <div class="input-field">
+                        <input type="text" id="scheduleDetails" placeholder="Schedule Details" required />
+                    </div>
+                    <button type="submit" class="submit-button">Generate Schedule</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Holiday & Events Tab -->
+        <div id="holidayEvent" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-calendar-check"></i> Holiday & Events Management</h2>
+                </div>
+                <form onsubmit="manageEvent(event)">
+                    <div class="input-field">
+                        <input type="text" id="eventTitle" placeholder="Event Title" required />
+                    </div>
+                    <div class="input-field">
+                        <input type="date" id="eventDate" required />
+                    </div>
+                    <div class="input-field">
+                        <textarea id="eventDescription" placeholder="Event Description" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Add Event</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/admin.js"></script>
+ 
+</body>
+</html>

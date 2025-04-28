@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard | Fun School</title>
+    <link rel="stylesheet" href="css/parent.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>👨‍👦</text></svg>">
+   
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-user-friends"></i>
+            <span>PARENT DASHBOARD</span>
+        </div>
+        <div class="user-profile">
+            <div class="user-avatar">PA</div>
+            <span>Parent</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('overview')">
+                <i class="fas fa-eye"></i> Child Overview
+            </button>
+            <button class="tab-btn" onclick="openTab('academicMonitoring')">
+                <i class="fas fa-graduation-cap"></i> Academic Monitoring
+            </button>
+            <button class="tab-btn" onclick="openTab('notifications')">
+                <i class="fas fa-bell"></i> Performance Notifications
+            </button>
+            <button class="tab-btn" onclick="openTab('communication')">
+                <i class="fas fa-comments"></i> Communication with Teachers
+            </button>
+            <button class="tab-btn" onclick="openTab('meetingRequests')">
+                <i class="fas fa-calendar-alt"></i> Request Meetings
+            </button>
+            <button class="tab-btn" onclick="openTab('feePayment')">
+                <i class="fas fa-money-check-alt"></i> Online Fee Payment
+            </button>
+        </div>
+
+        <!-- Child Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-eye"></i> Child Overview</h2>
+                </div>
+                <div class="children-list">
+                    <h3>Linked Children:</h3>
+                    <ul>
+                        <li>Child 1: <strong>John Doe</strong>
+                            <div>Grades: A, B, A-</div>
+                            <div>Attendance: 90%</div>
+                            <div>Fee Status: Paid</div>
+                        </li>
+                        <li>Child 2: <strong>Jane Doe</strong>
+                            <div>Grades: B+, C, A</div>
+                            <div>Attendance: 95%</div>
+                            <div>Fee Status: Pending</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="announcements">
+                    <h3>Announcements:</h3>
+                    <div class="notification">Report cards will be sent out next week.</div>
+                    <div class="notification">Parent-Teacher meetings are scheduled for Friday.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Monitoring Tab -->
+        <div id="academicMonitoring" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-graduation-cap"></i> Academic Monitoring</h2>
+                </div>
+                <h3>Grades Breakdown:</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mathematics</td>
+                            <td>A</td>
+                        </tr>
+                        <tr>
+                            <td>Science</td>
+                            <td>B+</td>
+                        </tr>
+                        <tr>
+                            <td>History</td>
+                            <td>B</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Attendance Summary:</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2023-10-01</td>
+                            <td>Present</td>
+                        </tr>
+                        <tr>
+                            <td>2023-10-02</td>
+                            <td>Absent</td>
+                        </tr>
+                       <tr>
+                            <td>2023-10-03</td>
+                            <td>Late</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Notifications Tab -->
+        <div id="notifications" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-bell"></i> Performance Notifications</h2>
+                </div>
+                <h3>Recent Notifications:</h3>
+                <div class="notification">John has been absent for 3 days.</div>
+                <div class="notification">Jane's grade in Mathematics is below 40%.</div>
+            </div>
+        </div>
+
+        <!-- Communication Tab -->
+        <div id="communication" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-comments"></i> Communication with Teachers</h2>
+                </div>
+                <form onsubmit="sendMessage(event)">
+                    <div class="input-field">
+                        <input type="text" id="teacherName" placeholder="Teacher's Name" required />
+                    </div>
+                    <div class="input-field">
+                        <textarea id="messageContent" placeholder="Write your message here..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Send Message</button>
+                </form>
+                <h3>Message History:</h3>
+                <ul>
+                    <li>You messaged Ms. Smith: "Can we discuss John's progress?"</li>
+                    <li>Ms. Smith replied: "Sure, we can set up a time."</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Meeting Requests Tab -->
+        <div id="meetingRequests" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Request Meetings</h2>
+                </div>
+                <form onsubmit="requestMeeting(event)">
+                    <div class="input-field">
+                        <input type="text" id="meetingSubject" placeholder="Subject" required />
+                    </div>
+                    <div class="input-field">
+                        <input type="datetime-local" id="meetingDateTime" required />
+                    </div>
+                    <div class="input-field">
+                        <textarea id="meetingReason" placeholder="Reason for Meeting" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Request Meeting</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Online Fee Payment Tab -->
+        <div id="feePayment" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-money-check-alt"></i> Online Fee Payment</h2>
+                </div>
+                <form onsubmit="payFees(event)">
+                    <div class="input-field">
+                        <input type="text" id="feeType" placeholder="Fee Type (e.g., Tuition, Transport)" required />
+                    </div>
+                    <div class="input-field">
+                        <input type="number" id="feeAmount" placeholder="Amount" required />
+                    </div>
+                    <button type="submit" class="submit-button">Pay Fee</button>
+                </form>
+                <h3>Payment History:</h3>
+                <ul>
+                    <li>Tuition Fee: $500 (Paid on 2023-09-01)</li>
+                    <li>Transport Fee: $100 (Due on 2023-10-15)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/parent.js"></script>
+</body>
+</html>
