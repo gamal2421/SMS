@@ -1,0 +1,153 @@
+/* Teacher Dashboard Styles */
+.schedule-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.schedule-item {
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-time {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.schedule-details {
+    flex: 1;
+    margin: 0 1rem;
+}
+
+.schedule-class {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.schedule-room {
+    font-size: 0.875rem;
+    color: var(--dark-gray);
+}
+
+.attendance-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.attendance-filters select,
+.attendance-filters input {
+    padding: 0.5rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 4px;
+}
+
+.attendance-list {
+    margin: 1rem 0;
+}
+
+.attendance-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.attendance-student {
+    flex: 1;
+}
+
+.attendance-status {
+    margin-left: 1rem;
+}
+
+.attendance-status select {
+    padding: 0.25rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 4px;
+}
+
+/* Assignment styles */
+.assignment-card {
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.assignment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.assignment-title {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.assignment-due {
+    font-size: 0.875rem;
+    color: var(--dark-gray);
+}
+
+.assignment-description {
+    margin: 0.5rem 0;
+    color: var(--dark-gray);
+}
+
+.assignment-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-pending {
+    background-color: var(--warning-color);
+    color: var(--white);
+}
+
+.status-completed {
+    background-color: var(--success-color);
+    color: var(--white);
+}
+
+.status-overdue {
+    background-color: var(--danger-color);
+    color: var(--white);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .schedule-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .schedule-details {
+        margin: 0.5rem 0;
+    }
+
+    .attendance-filters {
+        flex-direction: column;
+    }
+
+    .attendance-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .attendance-status {
+        margin: 0.5rem 0 0 0;
+        width: 100%;
+    }
+} 

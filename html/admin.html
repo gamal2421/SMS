@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | School Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-school"></i>
+            <span> SCHOOL</span>
+        </div>
+        <div class="user-profile">
+            <div class="user-avatar" id="userAvatar">AD</div>
+            <span id="userName">Loading...</span>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('dashboard')">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </button>
+            <button class="tab-btn" onclick="openTab('students')">
+                <i class="fas fa-user-graduate"></i> Students
+            </button>
+            <button class="tab-btn" onclick="openTab('teachers')">
+                <i class="fas fa-chalkboard-teacher"></i> Teachers
+            </button>
+            <button class="tab-btn" onclick="openTab('classes')">
+                <i class="fas fa-school"></i> Classes
+            </button>
+            <button class="tab-btn" onclick="openTab('profile')">
+                <i class="fas fa-user"></i> Profile
+            </button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalStudents">0</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalTeachers">0</div>
+                    <div class="stat-label">Total Teachers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalClasses">0</div>
+                    <div class="stat-label">Total Classes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalParents">0</div>
+                    <div class="stat-label">Total Parents</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-bell"></i> Recent Activities</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="activity-list" id="activitiesList">
+                        <li class="loading">Loading activities...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Tab -->
+        <div id="students" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-user-graduate"></i> Student Management</h2>
+                    <button class="btn btn-primary" onclick="addStudent()">
+                        <i class="fas fa-plus"></i> Add Student
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Grade</th>
+                                    <th>Section</th>
+                                    <th>Contact</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <tr>
+                                    <td colspan="5" class="loading">Loading students...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teachers Tab -->
+        <div id="teachers" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chalkboard-teacher"></i> Teacher Management</h2>
+                    <button class="btn btn-primary" onclick="addTeacher()">
+                        <i class="fas fa-plus"></i> Add Teacher
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Subject</th>
+                                    <th>Classes</th>
+                                    <th>Contact</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachersTableBody">
+                                <tr>
+                                    <td colspan="5" class="loading">Loading teachers...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classes Tab -->
+        <div id="classes" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-school"></i> Class Management</h2>
+                    <button class="btn btn-primary" onclick="addClass()">
+                        <i class="fas fa-plus"></i> Add Class
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Class Name</th>
+                                    <th>Grade</th>
+                                    <th>Teacher</th>
+                                    <th>Students</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classesTableBody">
+                                <tr>
+                                    <td colspan="5" class="loading">Loading classes...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-user"></i> My Profile</h2>
+                </div>
+                <div class="card-body">
+                    <div id="profileContent">
+                        <p><strong>Name:</strong> <span id="profileName">Loading...</span></p>
+                        <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
+                        <p><strong>Role:</strong> <span id="profileRole">Admin</span></p>
+                        <div class="user-avatar" id="profileAvatar">AD</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="addStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Student</h2>
+                <span class="close-modal" onclick="closeModal('addStudentModal')">&times;</span>
+            </div>
+            <form id="addStudentForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentFirstName">First Name</label>
+                        <input type="text" id="studentFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentLastName">Last Name</label>
+                        <input type="text" id="studentLastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentEmail">Email</label>
+                        <input type="email" id="studentEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentGrade">Grade</label>
+                        <input type="text" id="studentGrade" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentSection">Section</label>
+                        <input type="text" id="studentSection" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentContact">Contact</label>
+                        <input type="text" id="studentContact" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeModal('addStudentModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Teacher Modal -->
+    <div id="addTeacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Teacher</h2>
+                <span class="close-modal" onclick="closeModal('addTeacherModal')">&times;</span>
+            </div>
+            <form id="addTeacherForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="teacherFirstName">First Name</label>
+                        <input type="text" id="teacherFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="teacherLastName">Last Name</label>
+                        <input type="text" id="teacherLastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="teacherEmail">Email</label>
+                        <input type="email" id="teacherEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="teacherSubject">Subject</label>
+                        <input type="text" id="teacherSubject" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="teacherContact">Contact</label>
+                        <input type="text" id="teacherContact" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeModal('addTeacherModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Teacher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Class Modal -->
+    <div id="addClassModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Class</h2>
+                <span class="close-modal" onclick="closeModal('addClassModal')">&times;</span>
+            </div>
+            <form id="addClassForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="className">Class Name</label>
+                        <input type="text" id="className" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="classGrade">Grade</label>
+                        <input type="text" id="classGrade" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="classTeacher">Teacher</label>
+                        <select id="classTeacher" required>
+                            <option value="">Select Teacher</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeModal('addClassModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Class</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

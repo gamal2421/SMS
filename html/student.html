@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | School Management System</title>
+    <link rel="stylesheet" href="css/student.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-school"></i>
+            <span> SCHOOL</span>
+        </div>
+        <div class="user-profile">
+            <div class="user-avatar" id="userAvatar">JS</div>
+            <span id="userName">Loading...</span>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('grades')">
+                <i class="fas fa-star"></i> My Grades
+            </button>
+            <button class="tab-btn" onclick="openTab('classes')">
+                <i class="fas fa-book"></i> My Classes
+            </button>
+            <button class="tab-btn" onclick="openTab('attendance')">
+                <i class="fas fa-calendar-check"></i> Attendance
+            </button>
+            <button class="tab-btn" onclick="openTab('profile')">
+                <i class="fas fa-user"></i> Profile
+            </button>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-user"></i> My Profile</h2>
+                </div>
+                <div id="profileContent">
+                    <p><strong>Name:</strong> <span id="profileName">Loading...</span></p>
+                    <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
+                    <p><strong>Student ID:</strong> <span id="studentId">Loading...</span></p>
+                    <p><strong>Grade:</strong> <span id="grade">Loading...</span></p>
+                    <p><strong>Section:</strong> <span id="section">Loading...</span></p>
+                    <div class="user-avatar" id="profileAvatar">JS</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grades Tab -->
+        <div id="grades" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-star"></i> Current Grades</h2>
+                    <select id="termSelect" class="tab-btn" onchange="loadGrades()">
+                        <option value="current">Current Term</option>
+                        <option value="previous">Previous Term</option>
+                    </select>
+                </div>
+                <div id="gradesContent">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                                <th>Score</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gradesTableBody">
+                            <tr>
+                                <td colspan="4" class="loading">Loading grades...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classes Tab -->
+        <div id="classes" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-book"></i> My Current Classes</h2>
+                </div>
+                <div id="classesContent">
+                    <div class="loading">Loading classes...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Tab -->
+        <div id="attendance" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-calendar-check"></i> Attendance Overview</h2>
+                    <select id="monthSelect" class="tab-btn" onchange="loadAttendance()">
+                        <option value="current">Current Month</option>
+                        <option value="previous">Previous Month</option>
+                    </select>
+                </div>
+                <div id="attendanceContent">
+                    <div class="loading">Loading attendance...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Check authentication and role
+        document.addEventListener('DOMContentLoaded', () => {
+            requireAuth();
+            requireRole('student');
+            loadUserData();
+            loadGrades();
+            loadClasses();
+            loadAttendance();
+        });
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const user = getCurrentUser();
+                const response = await apiCall(`http://localhost:3000/api/students/user/${user.userId}`);
+                const studentData = await response.json();
+
+                // Update profile information
+                document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+                document.getElementById('userAvatar').textContent = getInitials(user.firstName, user.lastName);
+                document.getElementById('profileName').textContent = `${user.firstName} ${user.lastName}`;
+                document.getElementById('profileEmail').textContent = user.email;
+                document.getElementById('studentId').textContent = studentData.studentId;
+                document.getElementById('grade').textContent = studentData.grade;
+                document.getElementById('section').textContent = studentData.section;
+                document.getElementById('profileAvatar').textContent = getInitials(user.firstName, user.lastName);
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                alert('Error loading user data');
+            }
+        }
+
+        // Load grades
+        async function loadGrades() {
+            try {
+                const user = getCurrentUser();
+                const term = document.getElementById('termSelect').value;
+                const response = await apiCall(`http://localhost:3000/api/students/${user.userId}/grades?term=${term}`);
+                const grades = await response.json();
+
+                const tableBody = document.getElementById('gradesTableBody');
+                tableBody.innerHTML = '';
+
+                if (grades.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4">No grades available</td></tr>';
+                    return;
+                }
+
+                grades.forEach(grade => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${grade.subject}</td>
+                        <td>${grade.grade}</td>
+                        <td>${grade.score}</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${grade.score}%"></div>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading grades:', error);
+                alert('Error loading grades');
+            }
+        }
+
+        // Load classes
+        async function loadClasses() {
+            try {
+                const user = getCurrentUser();
+                const response = await apiCall(`http://localhost:3000/api/students/${user.userId}/classes`);
+                const classes = await response.json();
+
+                const content = document.getElementById('classesContent');
+                content.innerHTML = '';
+
+                if (classes.length === 0) {
+                    content.innerHTML = '<div class="no-data">No classes available</div>';
+                    return;
+                }
+
+                classes.forEach(classItem => {
+                    const classCard = document.createElement('div');
+                    classCard.className = 'subject-card';
+                    classCard.innerHTML = `
+                        <div class="subject-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="subject-info">
+                            <div class="subject-name">${classItem.subject}</div>
+                            <div class="subject-teacher">${classItem.teacher}</div>
+                            <div class="subject-schedule">
+                                <div class="schedule-item"><i class="fas fa-calendar-day"></i> ${classItem.schedule}</div>
+                                <div class="schedule-item"><i class="fas fa-map-marker-alt"></i> ${classItem.room}</div>
+                            </div>
+                        </div>
+                    `;
+                    content.appendChild(classCard);
+                });
+            } catch (error) {
+                console.error('Error loading classes:', error);
+                alert('Error loading classes');
+            }
+        }
+
+        // Load attendance
+        async function loadAttendance() {
+            try {
+                const user = getCurrentUser();
+                const month = document.getElementById('monthSelect').value;
+                const response = await apiCall(`http://localhost:3000/api/students/${user.userId}/attendance?month=${month}`);
+                const attendance = await response.json();
+
+                const content = document.getElementById('attendanceContent');
+                content.innerHTML = '';
+
+                if (attendance.length === 0) {
+                    content.innerHTML = '<div class="no-data">No attendance records available</div>';
+                    return;
+                }
+
+                // Create attendance calendar
+                const calendar = document.createElement('div');
+                calendar.className = 'calendar';
+                
+                // Add headers
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                days.forEach(day => {
+                    const header = document.createElement('div');
+                    header.className = 'calendar-day header';
+                    header.textContent = day;
+                    calendar.appendChild(header);
+                });
+
+                // Add attendance days
+                attendance.forEach(record => {
+                    const day = document.createElement('div');
+                    day.className = `calendar-day ${record.status}`;
+                    day.textContent = new Date(record.date).getDate();
+                    calendar.appendChild(day);
+                });
+
+                content.appendChild(calendar);
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+                alert('Error loading attendance');
+            }
+        }
+
+        // Helper functions
+        function getInitials(firstName, lastName) {
+            return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+        }
+
+        function openTab(tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+
+            const tabButtons = document.getElementsByClassName('tab-btn');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
