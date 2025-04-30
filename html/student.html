@@ -3,287 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard | School Management System</title>
+    <title>Student Dashboard - School Management System</title>
+    <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/student.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Additional styles specific to student page */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--background-purple);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .attendance-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .attendance-summary .card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .attendance-summary h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: var(--text-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            background: var(--background-purple);
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <i class="fas fa-school"></i>
-            <span> SCHOOL</span>
-        </div>
-        <div class="user-profile">
-            <div class="user-avatar" id="userAvatar">JS</div>
-            <span id="userName">Loading...</span>
-            <button onclick="logout()" class="logout-btn">Logout</button>
-        </div>
-    </header>
-
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('grades')">
-                <i class="fas fa-star"></i> My Grades
-            </button>
-            <button class="tab-btn" onclick="openTab('classes')">
-                <i class="fas fa-book"></i> My Classes
-            </button>
-            <button class="tab-btn" onclick="openTab('attendance')">
-                <i class="fas fa-calendar-check"></i> Attendance
-            </button>
-            <button class="tab-btn" onclick="openTab('profile')">
-                <i class="fas fa-user"></i> Profile
-            </button>
-        </div>
-
-        <!-- Profile Tab -->
-        <div id="profile" class="tab-content active">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-user"></i> My Profile</h2>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1>Student Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar">JS</div>
+                    <div class="user-details">
+                        <span class="user-name">John Smith</span>
+                        <span class="user-grade">Grade 10-A</span>
+                    </div>
                 </div>
-                <div id="profileContent">
-                    <p><strong>Name:</strong> <span id="profileName">Loading...</span></p>
-                    <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
-                    <p><strong>Student ID:</strong> <span id="studentId">Loading...</span></p>
-                    <p><strong>Grade:</strong> <span id="grade">Loading...</span></p>
-                    <p><strong>Section:</strong> <span id="section">Loading...</span></p>
-                    <div class="user-avatar" id="profileAvatar">JS</div>
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <button class="tab-btn active" data-tab="dashboard">
+                <i class="fas fa-home"></i> Dashboard
+            </button>
+            <button class="tab-btn" data-tab="schedule">
+                <i class="fas fa-calendar"></i> Schedule
+            </button>
+            <button class="tab-btn" data-tab="assignments">
+                <i class="fas fa-tasks"></i> Assignments
+            </button>
+            <button class="tab-btn" data-tab="grades">
+                <i class="fas fa-chart-line"></i> Grades
+            </button>
+            <button class="tab-btn" data-tab="attendance">
+                <i class="fas fa-user-check"></i> Attendance
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-grid">
+                    <div class="main-content">
+                        <!-- Stats Section -->
+                        <div class="stats-section">
+                            <div class="stat-card">
+                                <h3>Attendance Rate</h3>
+                                <p>95%</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Pending Assignments</h3>
+                                <p>3</p>
+                                <span class="status warning">Due Soon</span>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Upcoming Tests</h3>
+                                <p>2</p>
+                                <span class="status info">This Week</span>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Average Grade</h3>
+                                <p>88%</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 88%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Schedule -->
+                        <div class="schedule-section">
+                            <h2><i class="fas fa-clock"></i> Today's Schedule</h2>
+                            <div class="schedule-list">
+                                <div class="schedule-period">
+                                    <span class="period-time">8:00 AM - 9:30 AM</span>
+                                    <div class="period-details">
+                                        <h4>Mathematics</h4>
+                                        <p>Room 301 • Mr. Johnson</p>
+                                    </div>
+                                </div>
+                                <div class="schedule-period">
+                                    <span class="period-time">9:45 AM - 11:15 AM</span>
+                                    <div class="period-details">
+                                        <h4>Physics</h4>
+                                        <p>Room 205 • Ms. Thompson</p>
+                                    </div>
+                                </div>
+                                <div class="schedule-period">
+                                    <span class="period-time">11:30 AM - 1:00 PM</span>
+                                    <div class="period-details">
+                                        <h4>English Literature</h4>
+                                        <p>Room 102 • Mrs. Davis</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Announcements Section -->
+                    <div class="announcements-section">
+                        <h2><i class="fas fa-bullhorn"></i> Announcements</h2>
+                        <div class="announcements-list">
+                            <div class="card">
+                                <div class="announcement-header">
+                                    <h3>Mid-term Exams</h3>
+                                    <span class="announcement-date">Today</span>
+                                </div>
+                                <p>Mid-term examinations will begin next week. Please check your exam schedule and prepare accordingly.</p>
+                            </div>
+                            <div class="card">
+                                <div class="announcement-header">
+                                    <h3>Science Fair</h3>
+                                    <span class="announcement-date">Yesterday</span>
+                                </div>
+                                <p>Register for the annual science fair. Last date for registration is March 25th. Don't miss this opportunity!</p>
+                            </div>
+                            <div class="card">
+                                <div class="announcement-header">
+                                    <h3>Sports Day</h3>
+                                    <span class="announcement-date">2 days ago</span>
+                                </div>
+                                <p>Annual sports day will be held on April 15th. Sign up for your preferred events at the PE department.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Grades Tab -->
-        <div id="grades" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-star"></i> Current Grades</h2>
-                    <select id="termSelect" class="tab-btn" onchange="loadGrades()">
-                        <option value="current">Current Term</option>
-                        <option value="previous">Previous Term</option>
-                    </select>
-                </div>
-                <div id="gradesContent">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Subject</th>
-                                <th>Grade</th>
-                                <th>Score</th>
-                                <th>Progress</th>
-                            </tr>
-                        </thead>
-                        <tbody id="gradesTableBody">
-                            <tr>
-                                <td colspan="4" class="loading">Loading grades...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- Schedule Tab -->
+            <div id="schedule" class="tab-content">
+                <h2><i class="fas fa-calendar"></i> Weekly Schedule</h2>
+                <div class="schedule-grid">
+                    <!-- Monday -->
+                    <div class="schedule-day">
+                        <h3>Monday</h3>
+                        <div class="schedule-period">
+                            <span class="period-time">8:00 AM - 9:30 AM</span>
+                            <div class="period-details">
+                                <h4>Mathematics</h4>
+                                <p>Room 301 • Mr. Johnson</p>
+                            </div>
+                        </div>
+                        <div class="schedule-period">
+                            <span class="period-time">9:45 AM - 11:15 AM</span>
+                            <div class="period-details">
+                                <h4>Physics</h4>
+                                <p>Room 205 • Ms. Thompson</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tuesday -->
+                    <div class="schedule-day">
+                        <h3>Tuesday</h3>
+                        <div class="schedule-period">
+                            <span class="period-time">8:00 AM - 9:30 AM</span>
+                            <div class="period-details">
+                                <h4>Biology</h4>
+                                <p>Room 401 • Dr. Miller</p>
+                            </div>
+                        </div>
+                        <div class="schedule-period">
+                            <span class="period-time">9:45 AM - 11:15 AM</span>
+                            <div class="period-details">
+                                <h4>History</h4>
+                                <p>Room 103 • Mr. Anderson</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Classes Tab -->
-        <div id="classes" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-book"></i> My Current Classes</h2>
-                </div>
-                <div id="classesContent">
-                    <div class="loading">Loading classes...</div>
+            <!-- Assignments Tab -->
+            <div id="assignments" class="tab-content">
+                <h2><i class="fas fa-tasks"></i> Assignments</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="assignment-header">
+                            <h3>Mathematics Assignment</h3>
+                            <span class="status warning">Due Tomorrow</span>
+                        </div>
+                        <p>Complete exercises 5-10 from Chapter 4: Quadratic Equations</p>
+                        <div class="card-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Submit Assignment
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="assignment-header">
+                            <h3>Physics Lab Report</h3>
+                            <span class="status success">Submitted</span>
+                        </div>
+                        <p>Write a detailed report on the Light Refraction experiment</p>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> View Submission
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Attendance Tab -->
-        <div id="attendance" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-calendar-check"></i> Attendance Overview</h2>
-                    <select id="monthSelect" class="tab-btn" onchange="loadAttendance()">
-                        <option value="current">Current Month</option>
-                        <option value="previous">Previous Month</option>
-                    </select>
-                </div>
-                <div id="attendanceContent">
-                    <div class="loading">Loading attendance...</div>
+            <!-- Grades Tab -->
+            <div id="grades" class="tab-content">
+                <h2><i class="fas fa-chart-line"></i> Academic Performance</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Mathematics</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 92%"></div>
+                        </div>
+                        <p class="grade">92%</p>
+                        <span class="status success">Excellent</span>
+                    </div>
+                    <div class="card">
+                        <h3>Physics</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                        <p class="grade">85%</p>
+                        <span class="status success">Good</span>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Attendance Tab -->
+            <div id="attendance" class="tab-content">
+                <h2><i class="fas fa-user-check"></i> Attendance Record</h2>
+                <div class="card">
+                    <div class="attendance-summary">
+                        <div>
+                            <h3>Present</h3>
+                            <p>85 days</p>
+                        </div>
+                        <div>
+                            <h3>Absent</h3>
+                            <p>3 days</p>
+                        </div>
+                        <div>
+                            <h3>Late</h3>
+                            <p>2 days</p>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 95%"></div>
+                    </div>
+                    <p class="attendance-rate">95% Attendance Rate</p>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <script src="js/auth.js"></script>
-    <script>
-        // Check authentication and role
-        document.addEventListener('DOMContentLoaded', () => {
-            requireAuth();
-            requireRole('student');
-            loadUserData();
-            loadGrades();
-            loadClasses();
-            loadAttendance();
-        });
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
 
-        // Load user data
-        async function loadUserData() {
-            try {
-                const user = getCurrentUser();
-                const response = await apiCall(`http://localhost:3000/api/students/user/${user.userId}`);
-                const studentData = await response.json();
-
-                // Update profile information
-                document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
-                document.getElementById('userAvatar').textContent = getInitials(user.firstName, user.lastName);
-                document.getElementById('profileName').textContent = `${user.firstName} ${user.lastName}`;
-                document.getElementById('profileEmail').textContent = user.email;
-                document.getElementById('studentId').textContent = studentData.studentId;
-                document.getElementById('grade').textContent = studentData.grade;
-                document.getElementById('section').textContent = studentData.section;
-                document.getElementById('profileAvatar').textContent = getInitials(user.firstName, user.lastName);
-            } catch (error) {
-                console.error('Error loading user data:', error);
-                alert('Error loading user data');
-            }
-        }
-
-        // Load grades
-        async function loadGrades() {
-            try {
-                const user = getCurrentUser();
-                const term = document.getElementById('termSelect').value;
-                const response = await apiCall(`http://localhost:3000/api/students/${user.userId}/grades?term=${term}`);
-                const grades = await response.json();
-
-                const tableBody = document.getElementById('gradesTableBody');
-                tableBody.innerHTML = '';
-
-                if (grades.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="4">No grades available</td></tr>';
-                    return;
-                }
-
-                grades.forEach(grade => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${grade.subject}</td>
-                        <td>${grade.grade}</td>
-                        <td>${grade.score}</td>
-                        <td>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${grade.score}%"></div>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error loading grades:', error);
-                alert('Error loading grades');
-            }
-        }
-
-        // Load classes
-        async function loadClasses() {
-            try {
-                const user = getCurrentUser();
-                const response = await apiCall(`http://localhost:3000/api/students/${user.userId}/classes`);
-                const classes = await response.json();
-
-                const content = document.getElementById('classesContent');
-                content.innerHTML = '';
-
-                if (classes.length === 0) {
-                    content.innerHTML = '<div class="no-data">No classes available</div>';
-                    return;
-                }
-
-                classes.forEach(classItem => {
-                    const classCard = document.createElement('div');
-                    classCard.className = 'subject-card';
-                    classCard.innerHTML = `
-                        <div class="subject-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="subject-info">
-                            <div class="subject-name">${classItem.subject}</div>
-                            <div class="subject-teacher">${classItem.teacher}</div>
-                            <div class="subject-schedule">
-                                <div class="schedule-item"><i class="fas fa-calendar-day"></i> ${classItem.schedule}</div>
-                                <div class="schedule-item"><i class="fas fa-map-marker-alt"></i> ${classItem.room}</div>
-                            </div>
-                        </div>
-                    `;
-                    content.appendChild(classCard);
-                });
-            } catch (error) {
-                console.error('Error loading classes:', error);
-                alert('Error loading classes');
-            }
-        }
-
-        // Load attendance
-        async function loadAttendance() {
-            try {
-                const user = getCurrentUser();
-                const month = document.getElementById('monthSelect').value;
-                const response = await apiCall(`http://localhost:3000/api/students/${user.userId}/attendance?month=${month}`);
-                const attendance = await response.json();
-
-                const content = document.getElementById('attendanceContent');
-                content.innerHTML = '';
-
-                if (attendance.length === 0) {
-                    content.innerHTML = '<div class="no-data">No attendance records available</div>';
-                    return;
-                }
-
-                // Create attendance calendar
-                const calendar = document.createElement('div');
-                calendar.className = 'calendar';
-                
-                // Add headers
-                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                days.forEach(day => {
-                    const header = document.createElement('div');
-                    header.className = 'calendar-day header';
-                    header.textContent = day;
-                    calendar.appendChild(header);
-                });
-
-                // Add attendance days
-                attendance.forEach(record => {
-                    const day = document.createElement('div');
-                    day.className = `calendar-day ${record.status}`;
-                    day.textContent = new Date(record.date).getDate();
-                    calendar.appendChild(day);
-                });
-
-                content.appendChild(calendar);
-            } catch (error) {
-                console.error('Error loading attendance:', error);
-                alert('Error loading attendance');
-            }
-        }
-
-        // Helper functions
-        function getInitials(firstName, lastName) {
-            return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
-        }
-
-        function openTab(tabName) {
-            const tabContents = document.getElementsByClassName('tab-content');
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove('active');
-            }
-
-            const tabButtons = document.getElementsByClassName('tab-btn');
-            for (let i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].classList.remove('active');
-            }
-
-            document.getElementById(tabName).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-    </script>
+    <!-- Scripts -->
+    <script src="js/student-ui.js"></script>
 </body>
 </html>

@@ -3,209 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parent Dashboard | Fun School</title>
-    <link rel="stylesheet" href="css/parent.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>👨‍👦</text></svg>">
-   
+    <title>Parent Dashboard - School Management System</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <i class="fas fa-user-friends"></i>
-            <span>PARENT DASHBOARD</span>
-        </div>
-        <div class="user-profile">
-            <div class="user-avatar">PA</div>
-            <span>Parent</span>
-        </div>
-    </header>
-
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('overview')">
-                <i class="fas fa-eye"></i> Child Overview
-            </button>
-            <button class="tab-btn" onclick="openTab('academicMonitoring')">
-                <i class="fas fa-graduation-cap"></i> Academic Monitoring
-            </button>
-            <button class="tab-btn" onclick="openTab('notifications')">
-                <i class="fas fa-bell"></i> Performance Notifications
-            </button>
-            <button class="tab-btn" onclick="openTab('communication')">
-                <i class="fas fa-comments"></i> Communication with Teachers
-            </button>
-            <button class="tab-btn" onclick="openTab('meetingRequests')">
-                <i class="fas fa-calendar-alt"></i> Request Meetings
-            </button>
-            <button class="tab-btn" onclick="openTab('feePayment')">
-                <i class="fas fa-money-check-alt"></i> Online Fee Payment
-            </button>
-        </div>
-
-        <!-- Child Overview Tab -->
-        <div id="overview" class="tab-content active">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-eye"></i> Child Overview</h2>
-                </div>
-                <div class="children-list">
-                    <h3>Linked Children:</h3>
-                    <ul>
-                        <li>Child 1: <strong>John Doe</strong>
-                            <div>Grades: A, B, A-</div>
-                            <div>Attendance: 90%</div>
-                            <div>Fee Status: Paid</div>
-                        </li>
-                        <li>Child 2: <strong>Jane Doe</strong>
-                            <div>Grades: B+, C, A</div>
-                            <div>Attendance: 95%</div>
-                            <div>Fee Status: Pending</div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="announcements">
-                    <h3>Announcements:</h3>
-                    <div class="notification">Report cards will be sent out next week.</div>
-                    <div class="notification">Parent-Teacher meetings are scheduled for Friday.</div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1>Parent Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="userName"></span>
+                    <div class="avatar" id="userAvatar"></div>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Academic Monitoring Tab -->
-        <div id="academicMonitoring" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-graduation-cap"></i> Academic Monitoring</h2>
-                </div>
-                <h3>Grades Breakdown:</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Grade</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Mathematics</td>
-                            <td>A</td>
-                        </tr>
-                        <tr>
-                            <td>Science</td>
-                            <td>B+</td>
-                        </tr>
-                        <tr>
-                            <td>History</td>
-                            <td>B</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h3>Attendance Summary:</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2023-10-01</td>
-                            <td>Present</td>
-                        </tr>
-                        <tr>
-                            <td>2023-10-02</td>
-                            <td>Absent</td>
-                        </tr>
-                       <tr>
-                            <td>2023-10-03</td>
-                            <td>Late</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <button class="tab-btn active" onclick="openTab('dashboard')">
+                <i class="fas fa-home"></i> Dashboard
+            </button>
+            <button class="tab-btn" onclick="openTab('academics')">
+                <i class="fas fa-graduation-cap"></i> Academics
+            </button>
+            <button class="tab-btn" onclick="openTab('schedule')">
+                <i class="fas fa-calendar"></i> Schedule
+            </button>
+            <button class="tab-btn" onclick="openTab('fees')">
+                <i class="fas fa-credit-card"></i> Fees
+            </button>
+            <button class="tab-btn" onclick="openTab('communications')">
+                <i class="fas fa-envelope"></i> Communications
+            </button>
+        </nav>
 
-        <!-- Notifications Tab -->
-        <div id="notifications" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-bell"></i> Performance Notifications</h2>
-                </div>
-                <h3>Recent Notifications:</h3>
-                <div class="notification">John has been absent for 3 days.</div>
-                <div class="notification">Jane's grade in Mathematics is below 40%.</div>
-            </div>
-        </div>
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content">
+                <div class="dashboard-grid">
+                    <!-- Children Overview -->
+                    <div class="children-section">
+                        <h2>Children</h2>
+                        <div id="children-overview" class="cards-grid">
+                            <div class="card">
+                                <div class="student-header">
+                                    <div class="student-avatar">MW</div>
+                                    <div class="student-info">
+                                        <h3>Mike Wilson</h3>
+                                        <p>Grade 9-C</p>
+                                    </div>
+                                </div>
+                                <div class="student-stats">
+                                    <div class="stat">
+                                        <label>Attendance</label>
+                                        <span>95%</span>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 95%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="stat">
+                                        <label>Average Grade</label>
+                                        <span>88%</span>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 88%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Communication Tab -->
-        <div id="communication" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-comments"></i> Communication with Teachers</h2>
+                    <!-- Announcements -->
+                    <div class="announcements-section">
+                        <h2>Announcements</h2>
+                        <div id="announcements-list" class="cards-grid">
+                            <div class="card">
+                                <div class="announcement-header high">
+                                    <h3>Parent-Teacher Meeting</h3>
+                                    <span class="announcement-date">March 10, 2024</span>
+                                </div>
+                                <p>Annual parent-teacher meeting scheduled for April 5. Please mark your calendars.</p>
+                            </div>
+                            <div class="card">
+                                <div class="announcement-header medium">
+                                    <h3>School Holiday</h3>
+                                    <span class="announcement-date">March 15, 2024</span>
+                                </div>
+                                <p>School will be closed for spring break from March 20-28.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <form onsubmit="sendMessage(event)">
-                    <div class="input-field">
-                        <input type="text" id="teacherName" placeholder="Teacher's Name" required />
-                    </div>
-                    <div class="input-field">
-                        <textarea id="messageContent" placeholder="Write your message here..." required></textarea>
-                    </div>
-                    <button type="submit" class="submit-button">Send Message</button>
-                </form>
-                <h3>Message History:</h3>
-                <ul>
-                    <li>You messaged Ms. Smith: "Can we discuss John's progress?"</li>
-                    <li>Ms. Smith replied: "Sure, we can set up a time."</li>
-                </ul>
             </div>
-        </div>
 
-        <!-- Meeting Requests Tab -->
-        <div id="meetingRequests" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Request Meetings</h2>
+            <!-- Academics Tab -->
+            <div id="academics" class="tab-content" style="display: none;">
+                <div id="academics-container">
+                    <div class="grades-section">
+                        <h2>Grades</h2>
+                        <div class="grades-grid">
+                            <div class="card">
+                                <h3>Mathematics</h3>
+                                <div class="grades-chart">
+                                    <div class="grade-bar" style="height: 85%">
+                                        <span class="grade-value">85%</span>
+                                    </div>
+                                    <div class="grade-bar" style="height: 88%">
+                                        <span class="grade-value">88%</span>
+                                    </div>
+                                    <div class="grade-bar" style="height: 82%">
+                                        <span class="grade-value">82%</span>
+                                    </div>
+                                </div>
+                                <p><strong>Average:</strong> 85%</p>
+                            </div>
+                            <div class="card">
+                                <h3>Physics</h3>
+                                <div class="grades-chart">
+                                    <div class="grade-bar" style="height: 90%">
+                                        <span class="grade-value">90%</span>
+                                    </div>
+                                    <div class="grade-bar" style="height: 87%">
+                                        <span class="grade-value">87%</span>
+                                    </div>
+                                    <div class="grade-bar" style="height: 85%">
+                                        <span class="grade-value">85%</span>
+                                    </div>
+                                </div>
+                                <p><strong>Average:</strong> 87.3%</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <form onsubmit="requestMeeting(event)">
-                    <div class="input-field">
-                        <input type="text" id="meetingSubject" placeholder="Subject" required />
-                    </div>
-                    <div class="input-field">
-                        <input type="datetime-local" id="meetingDateTime" required />
-                    </div>
-                    <div class="input-field">
-                        <textarea id="meetingReason" placeholder="Reason for Meeting" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-button">Request Meeting</button>
-                </form>
             </div>
-        </div>
 
-        <!-- Online Fee Payment Tab -->
-        <div id="feePayment" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-money-check-alt"></i> Online Fee Payment</h2>
+            <!-- Schedule Tab -->
+            <div id="schedule" class="tab-content" style="display: none;">
+                <h2>Class Schedule</h2>
+                <div id="schedule-list" class="schedule-grid">
+                    <div class="schedule-day">
+                        <h3>Monday</h3>
+                        <div class="schedule-period">
+                            <span class="period-time">8:00 AM</span>
+                            <div class="period-details">
+                                <h4>Mathematics</h4>
+                                <p>Dr. Jane Doe</p>
+                            </div>
+                        </div>
+                        <div class="schedule-period">
+                            <span class="period-time">9:30 AM</span>
+                            <div class="period-details">
+                                <h4>Physics</h4>
+                                <p>Dr. Jane Doe</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <form onsubmit="payFees(event)">
-                    <div class="input-field">
-                        <input type="text" id="feeType" placeholder="Fee Type (e.g., Tuition, Transport)" required />
-                    </div>
-                    <div class="input-field">
-                        <input type="number" id="feeAmount" placeholder="Amount" required />
-                    </div>
-                    <button type="submit" class="submit-button">Pay Fee</button>
-                </form>
-                <h3>Payment History:</h3>
-                <ul>
-                    <li>Tuition Fee: $500 (Paid on 2023-09-01)</li>
-                    <li>Transport Fee: $100 (Due on 2023-10-15)</li>
-                </ul>
             </div>
-        </div>
+
+            <!-- Fees Tab -->
+            <div id="fees" class="tab-content" style="display: none;">
+                <h2>School Fees</h2>
+                <div id="fees-container" class="cards-grid">
+                    <div class="card">
+                        <div class="fee-header">
+                            <h3>Tuition Fee Q1</h3>
+                            <span class="status pending">Pending</span>
+                        </div>
+                        <div class="fee-details">
+                            <p><strong>Amount:</strong> $2,500</p>
+                            <p><strong>Due Date:</strong> March 30, 2024</p>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-credit-card"></i> Pay Now
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="fee-header">
+                            <h3>Library Fee</h3>
+                            <span class="status paid">Paid</span>
+                        </div>
+                        <div class="fee-details">
+                            <p><strong>Amount:</strong> $100</p>
+                            <p><strong>Due Date:</strong> March 15, 2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communications Tab -->
+            <div id="communications" class="tab-content" style="display: none;">
+                <h2>Messages</h2>
+                <div id="communications-container" class="cards-grid">
+                    <div class="card unread">
+                        <div class="message-header">
+                            <h3>Mathematics Performance</h3>
+                            <span class="message-date">March 15, 2024</span>
+                        </div>
+                        <p><strong>From:</strong> Dr. Jane Doe</p>
+                        <div class="card-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-envelope-open"></i> Read
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card read">
+                        <div class="message-header">
+                            <h3>Academic Progress</h3>
+                            <span class="message-date">March 10, 2024</span>
+                        </div>
+                        <p><strong>From:</strong> Principal Smith</p>
+                        <div class="card-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-envelope-open"></i> Read
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <script src="js/parent.js"></script>
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/ui.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/parent-ui.js"></script>
 </body>
 </html>

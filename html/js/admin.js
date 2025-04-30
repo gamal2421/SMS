@@ -1,213 +1,319 @@
-// Admin Dashboard Functionality
+// Mock Data
+const mockData = {
+    students: [
+        { id: 1, firstName: 'John', lastName: 'Smith', email: 'john@school.com', grade: '10', section: 'A', contact: '123-456-7890' },
+        { id: 2, firstName: 'Sarah', lastName: 'Johnson', email: 'sarah@school.com', grade: '11', section: 'B', contact: '123-456-7891' },
+        { id: 3, firstName: 'Mike', lastName: 'Wilson', email: 'mike@school.com', grade: '9', section: 'C', contact: '123-456-7892' }
+    ],
+    teachers: [
+        { id: 1, firstName: 'Jane', lastName: 'Doe', email: 'jane@school.com', subject: 'Mathematics', contact: '123-456-7893' },
+        { id: 2, firstName: 'Robert', lastName: 'Brown', email: 'robert@school.com', subject: 'English', contact: '123-456-7894' },
+        { id: 3, firstName: 'Emily', lastName: 'White', email: 'emily@school.com', subject: 'Science', contact: '123-456-7895' }
+    ],
+    classes: [
+        { id: 1, name: 'Mathematics 10A', grade: '10', teacher: 'Jane Doe', students: 30 },
+        { id: 2, name: 'English 11B', grade: '11', teacher: 'Robert Brown', students: 25 },
+        { id: 3, name: 'Science 9C', grade: '9', teacher: 'Emily White', students: 28 }
+    ],
+    activities: [
+        { action: 'New student registered', timestamp: '2 hours ago' },
+        { action: 'Teacher updated profile', timestamp: '3 hours ago' },
+        { action: 'New class created', timestamp: '1 day ago' },
+        { action: 'System maintenance completed', timestamp: '2 days ago' }
+    ]
+};
 
+// Initialize data on page load
 document.addEventListener('DOMContentLoaded', () => {
-    requireRole('admin');
-    loadDashboard();
-    loadProfile();
+    loadUserProfile();
+    updateDashboardStats();
+    loadActivities();
+    openTab('dashboard');
 });
 
-// Tab switching
+// User Profile Functions
+function loadUserProfile() {
+    const adminUser = {
+        initials: 'AD',
+        name: 'Admin User',
+        email: 'admin@school.com'
+    };
+
+    document.getElementById('userAvatar').textContent = adminUser.initials;
+    document.getElementById('userName').textContent = adminUser.name;
+    document.getElementById('profileName').textContent = adminUser.name;
+    document.getElementById('profileEmail').textContent = adminUser.email;
+    document.getElementById('profileAvatar').textContent = adminUser.initials;
+}
+
+// Tab Management
 function openTab(tabName) {
-    const tabContents = document.getElementsByClassName('tab-content');
-    for (let i = 0; i < tabContents.length; i++) {
-        tabContents[i].classList.remove('active');
-    }
-    const tabButtons = document.getElementsByClassName('tab-btn');
-    for (let i = 0; i < tabButtons.length; i++) {
-        tabButtons[i].classList.remove('active');
-    }
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(content => {
+        content.classList.remove('active');
+    });
+
+    // Remove active class from all tab buttons
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(button => {
+        button.classList.remove('active');
+    });
+
+    // Show selected tab and activate button
     document.getElementById(tabName).classList.add('active');
-    event.currentTarget.classList.add('active');
-    // Load data for the selected tab
+    document.querySelector(`button[onclick="openTab('${tabName}')"]`).classList.add('active');
+
+    // Load tab-specific data
     switch(tabName) {
-        case 'students': loadStudents(); break;
-        case 'teachers': loadTeachers(); break;
-        case 'classes': loadClasses(); break;
-        case 'dashboard': loadDashboard(); break;
-        case 'profile': loadProfile(); break;
+        case 'dashboard':
+            updateDashboardStats();
+            loadActivities();
+            break;
+        case 'students':
+            loadStudents();
+            break;
+        case 'teachers':
+            loadTeachers();
+            break;
+        case 'classes':
+            loadClasses();
+            break;
     }
 }
 
-// Dashboard (placeholder, needs backend endpoint for stats)
-async function loadDashboard() {
-    // For now, just count students from /api/students
-    try {
-        const response = await fetch('http://localhost:5000/api/students');
-        const students = await response.json();
-        document.getElementById('totalStudents').textContent = students.length;
-        document.getElementById('totalTeachers').textContent = '0';
-        document.getElementById('totalClasses').textContent = '0';
-        document.getElementById('totalParents').textContent = '0';
-        // Activities placeholder
-        const activitiesList = document.getElementById('activitiesList');
-        activitiesList.innerHTML = '<li>No recent activities.</li>';
-    } catch (error) {
-        showError('Failed to load dashboard');
-    }
+// Dashboard Functions
+function updateDashboardStats() {
+    document.getElementById('totalStudents').textContent = mockData.students.length;
+    document.getElementById('totalTeachers').textContent = mockData.teachers.length;
+    document.getElementById('totalClasses').textContent = mockData.classes.length;
+    document.getElementById('totalParents').textContent = mockData.students.length; // Assuming one parent per student
 }
 
-// Students
-async function loadStudents() {
-    try {
-        const response = await fetch('http://localhost:5000/api/students');
-        const students = await response.json();
-        const tableBody = document.getElementById('studentsTableBody');
-        tableBody.innerHTML = '';
-        students.forEach(student => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${student.firstName} ${student.lastName}</td>
-                <td>${student.grade || '-'}</td>
-                <td>${student.section || '-'}</td>
-                <td>${student.email}</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn btn-danger" onclick="deleteStudent(${student.id})"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    } catch (error) {
-        showError('Failed to load students');
-    }
+function loadActivities() {
+    const activitiesList = document.getElementById('activitiesList');
+    activitiesList.innerHTML = mockData.activities.map(activity => `
+        <li>
+            <i class="fas fa-bell"></i>
+            <span>${activity.action}</span>
+            <small>${activity.timestamp}</small>
+        </li>
+    `).join('');
 }
 
-// Teachers
-async function loadTeachers() {
-    const response = await fetch('http://localhost:5000/api/teachers');
-    const teachers = await response.json();
-    const tableBody = document.getElementById('teachersTableBody');
-    tableBody.innerHTML = '';
-    teachers.forEach(teacher => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+// Student Management Functions
+function loadStudents() {
+    const tbody = document.getElementById('studentsTableBody');
+    tbody.innerHTML = mockData.students.map(student => `
+        <tr>
+            <td>${student.firstName} ${student.lastName}</td>
+            <td>${student.grade}</td>
+            <td>${student.section}</td>
+            <td>${student.contact}</td>
+            <td>
+                <button class="btn btn-sm" onclick="editStudent(${student.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm" onclick="deleteStudent(${student.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function addStudent() {
+    const modal = document.getElementById('addStudentModal');
+    modal.style.display = 'block';
+}
+
+// Teacher Management Functions
+function loadTeachers() {
+    const tbody = document.getElementById('teachersTableBody');
+    tbody.innerHTML = mockData.teachers.map(teacher => `
+        <tr>
             <td>${teacher.firstName} ${teacher.lastName}</td>
             <td>${teacher.subject}</td>
-            <td>-</td>
-            <td>${teacher.contact || ''}</td>
+            <td>${getTeacherClasses(teacher.firstName + ' ' + teacher.lastName)}</td>
+            <td>${teacher.contact}</td>
             <td>
-                <div class="action-buttons">
-                    <button class="btn btn-danger" onclick="deleteTeacher(${teacher.id})"><i class="fas fa-trash"></i></button>
-                </div>
+                <button class="btn btn-sm" onclick="editTeacher(${teacher.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm" onclick="deleteTeacher(${teacher.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
             </td>
-        `;
-        tableBody.appendChild(tr);
-    });
+        </tr>
+    `).join('');
 }
 
-// Classes (placeholder)
-async function loadClasses() {
-    const tableBody = document.getElementById('classesTableBody');
-    tableBody.innerHTML = '<tr><td colspan="5">No classes endpoint yet.</td></tr>';
+function getTeacherClasses(teacherName) {
+    return mockData.classes
+        .filter(cls => cls.teacher === teacherName)
+        .map(cls => cls.name)
+        .join(', ') || 'No classes assigned';
 }
 
-// Profile
-function loadProfile() {
-    const user = getCurrentUser();
-    if (user) {
-        document.getElementById('profileName').textContent = user.firstName + ' ' + user.lastName;
-        document.getElementById('profileEmail').textContent = user.email;
-        document.getElementById('profileRole').textContent = user.role;
-        document.getElementById('userName').textContent = user.firstName + ' ' + user.lastName;
-        document.getElementById('profileAvatar').textContent = user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase();
-        document.getElementById('userAvatar').textContent = user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase();
-    }
-}
-
-// Modal logic
-function addStudent() {
-    document.getElementById('addStudentModal').style.display = 'block';
-}
 function addTeacher() {
-    document.getElementById('addTeacherModal').style.display = 'block';
+    const modal = document.getElementById('addTeacherModal');
+    modal.style.display = 'block';
 }
+
+// Class Management Functions
+function loadClasses() {
+    const tbody = document.getElementById('classesTableBody');
+    tbody.innerHTML = mockData.classes.map(cls => `
+        <tr>
+            <td>${cls.name}</td>
+            <td>${cls.grade}</td>
+            <td>${cls.teacher}</td>
+            <td>${cls.students}</td>
+            <td>
+                <button class="btn btn-sm" onclick="editClass(${cls.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm" onclick="deleteClass(${cls.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
 function addClass() {
-    document.getElementById('addClassModal').style.display = 'block';
+    const modal = document.getElementById('addClassModal');
+    modal.style.display = 'block';
+    
+    // Populate teacher dropdown
+    const teacherSelect = document.getElementById('classTeacher');
+    teacherSelect.innerHTML = '<option value="">Select Teacher</option>' +
+        mockData.teachers.map(teacher => 
+            `<option value="${teacher.id}">${teacher.firstName} ${teacher.lastName}</option>`
+        ).join('');
 }
+
+// Modal Functions
 function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
+    const modal = document.getElementById(modalId);
+    modal.style.display = 'none';
 }
 
-// Form submissions (placeholders)
-document.getElementById('addStudentForm').addEventListener('submit', async function(e) {
+// Form Submission Handlers
+document.getElementById('addStudentForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
-    const firstName = document.getElementById('studentFirstName').value.trim();
-    const lastName = document.getElementById('studentLastName').value.trim();
-    const email = document.getElementById('studentEmail').value.trim();
-    const grade = document.getElementById('studentGrade').value.trim();
-    const section = document.getElementById('studentSection').value.trim();
-    const username = email.split('@')[0];
-    const password = 'student123';
-
-    if (!firstName || !lastName || !email) {
-        showError('Please fill all required fields.');
-        return;
-    }
-
-    try {
-        const response = await fetch('http://localhost:5000/api/students', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password, firstName, lastName, grade, section })
-        });
-        if (response.ok) {
-            showSuccess('Student added!');
-            closeModal('addStudentModal');
-            loadStudents();
-        } else {
-            const data = await response.json();
-            showError(data.message || 'Failed to add student.');
-        }
-    } catch (err) {
-        showError('Failed to add student.');
-    }
+    const newStudent = {
+        id: mockData.students.length + 1,
+        firstName: document.getElementById('studentFirstName').value,
+        lastName: document.getElementById('studentLastName').value,
+        email: document.getElementById('studentEmail').value,
+        grade: document.getElementById('studentGrade').value,
+        section: document.getElementById('studentSection').value,
+        contact: document.getElementById('studentContact').value
+    };
+    mockData.students.push(newStudent);
+    loadStudents();
+    closeModal('addStudentModal');
+    this.reset();
+    updateDashboardStats();
 });
-document.getElementById('addTeacherForm').addEventListener('submit', async function(e) {
+
+document.getElementById('addTeacherForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
-    const firstName = document.getElementById('teacherFirstName').value.trim();
-    const lastName = document.getElementById('teacherLastName').value.trim();
-    const email = document.getElementById('teacherEmail').value.trim();
-    const subject = document.getElementById('teacherSubject').value.trim();
-    const contact = document.getElementById('teacherContact').value.trim();
-    if (!firstName || !lastName || !email || !subject) {
-        showError('Please fill all required fields.');
-        return;
+    const newTeacher = {
+        id: mockData.teachers.length + 1,
+        firstName: document.getElementById('teacherFirstName').value,
+        lastName: document.getElementById('teacherLastName').value,
+        email: document.getElementById('teacherEmail').value,
+        subject: document.getElementById('teacherSubject').value,
+        contact: document.getElementById('teacherContact').value
+    };
+    mockData.teachers.push(newTeacher);
+    loadTeachers();
+    closeModal('addTeacherModal');
+    this.reset();
+    updateDashboardStats();
+});
+
+document.getElementById('addClassForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const teacherId = document.getElementById('classTeacher').value;
+    const teacher = mockData.teachers.find(t => t.id === parseInt(teacherId));
+    const newClass = {
+        id: mockData.classes.length + 1,
+        name: document.getElementById('className').value,
+        grade: document.getElementById('classGrade').value,
+        teacher: teacher ? `${teacher.firstName} ${teacher.lastName}` : '',
+        students: 0
+    };
+    mockData.classes.push(newClass);
+    loadClasses();
+    closeModal('addClassModal');
+    this.reset();
+    updateDashboardStats();
+});
+
+// Logout Function
+function logout() {
+    // Clear user session data
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('rememberMe');
+    
+    // Show logout notification
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span>Successfully logged out!</span>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    // Add fade-in animation
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+        window.location.href = '/html/login.html';
+    }, 1500);
+}
+
+// CRUD Operations
+function editStudent(id) {
+    alert('Edit student ' + id + ' (Feature to be implemented)');
+}
+
+function deleteStudent(id) {
+    if (confirm('Are you sure you want to delete this student?')) {
+        mockData.students = mockData.students.filter(student => student.id !== id);
+        loadStudents();
+        updateDashboardStats();
     }
-    const response = await fetch('http://localhost:5000/api/teachers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, subject, contact })
-    });
-    if (response.ok) {
-        showSuccess('Teacher added!');
-        closeModal('addTeacherModal');
+}
+
+function editTeacher(id) {
+    alert('Edit teacher ' + id + ' (Feature to be implemented)');
+}
+
+function deleteTeacher(id) {
+    if (confirm('Are you sure you want to delete this teacher?')) {
+        mockData.teachers = mockData.teachers.filter(teacher => teacher.id !== id);
         loadTeachers();
-    } else {
-        const data = await response.json();
-        showError(data.message || 'Failed to add teacher.');
+        updateDashboardStats();
     }
-});
-document.getElementById('addClassForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    showError('Add class not implemented yet.');
-});
-
-// Utility
-function showError(message) {
-    alert(message);
-}
-function showSuccess(message) {
-    alert(message);
 }
 
-async function deleteTeacher(id) {
-    if (!confirm('Delete this teacher?')) return;
-    const response = await fetch(`http://localhost:5000/api/teachers/${id}`, { method: 'DELETE' });
-    if (response.ok) {
-        showSuccess('Teacher deleted!');
-        loadTeachers();
-    } else {
-        showError('Failed to delete teacher.');
+function editClass(id) {
+    alert('Edit class ' + id + ' (Feature to be implemented)');
+}
+
+function deleteClass(id) {
+    if (confirm('Are you sure you want to delete this class?')) {
+        mockData.classes = mockData.classes.filter(cls => cls.id !== id);
+        loadClasses();
+        updateDashboardStats();
     }
 } 

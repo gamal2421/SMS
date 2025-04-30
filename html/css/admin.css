@@ -61,21 +61,37 @@ header::after {
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 20px;
+    border-radius: 30px;
+    backdrop-filter: blur(5px);
 }
 
 .user-avatar {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    background-color: var(--gold);
+    background: linear-gradient(135deg, var(--gold), #ffd700);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: white;
-    border: 3px solid white;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.1);
+}
+
+#userName {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .tabs {
@@ -134,9 +150,15 @@ header::after {
     border-radius: 15px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
@@ -173,13 +195,21 @@ header::after {
 }
 
 .table th {
-    background-color: #f5edff;
+    background: linear-gradient(135deg, #f5edff, #f0e5ff);
     color: var(--purple-dark);
     font-weight: bold;
+    padding: 1.2rem 1rem;
 }
 
-.table tr:hover {
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f0e5ff;
+    transition: all 0.3s ease;
+}
+
+.table tr:hover td {
     background-color: #faf5ff;
+    transform: scale(1.01);
 }
 
 .badge {
@@ -240,23 +270,43 @@ header::after {
 }
 
 .stat-card {
-    background: var(--white);
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--purple-light), var(--gold));
 }
 
 .stat-value {
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--primary-color);
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--purple-dark);
     margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .stat-label {
-    color: var(--dark-gray);
-    font-size: 1rem;
+    color: #666;
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 .activity-list {
@@ -302,27 +352,6 @@ header::after {
     overflow-x: auto;
 }
 
-.table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.table th {
-    background-color: var(--light-gray);
-    font-weight: 600;
-    text-align: left;
-    padding: 1rem;
-}
-
-.table td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--light-gray);
-}
-
-.table tr:hover {
-    background-color: var(--light-gray);
-}
-
 /* Action buttons */
 .action-buttons {
     display: flex;
@@ -330,21 +359,35 @@ header::after {
 }
 
 .btn {
-    padding: 0.5rem 1rem;
+    padding: 8px 16px;
+    border-radius: 8px;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-weight: 600;
     transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+}
+
+.btn i {
+    font-size: 1.1em;
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
-    color: var(--white);
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+    color: white;
+    box-shadow: 0 4px 12px rgba(106, 13, 173, 0.2);
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(106, 13, 173, 0.3);
 }
 
 .btn-danger {
@@ -409,4 +452,64 @@ header::after {
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1.5rem;
+}
+
+.logout-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.logout-btn:active {
+    transform: translateY(0);
+}
+
+.logout-btn::before {
+    content: '👋';
+    font-size: 1.1em;
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: translateX(150%);
+    transition: transform 0.3s ease-out;
+    z-index: 1000;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.notification-content i {
+    font-size: 1.2em;
+    color: #4CAF50;
 } 
