@@ -58,8 +58,27 @@ const mockData = {
         { id: '3', description: 'Lab Fee', amount: 150, dueDate: '2024-03-15', status: 'Paid' }
     ],
     communications: [
-        { id: '1', from: 'Dr. Jane Doe', subject: 'Mathematics Performance', date: '2024-03-15', read: false },
-        { id: '2', from: 'Principal Smith', subject: 'Academic Progress', date: '2024-03-10', read: true }
+        { 
+            id: 'message-attendance', 
+            from: 'Mrs. Sarah Parker', 
+            subject: 'Attendance Update', 
+            date: '2024-03-18', 
+            read: false 
+        },
+        { 
+            id: 'message-science-club', 
+            from: 'Dr. Robert Chen', 
+            subject: 'Science Club Competition', 
+            date: '2024-03-16', 
+            read: false 
+        },
+        { 
+            id: 'message-career-day', 
+            from: 'Ms. Emily Brooks', 
+            subject: 'Career Day Invitation', 
+            date: '2024-03-15', 
+            read: true 
+        }
     ]
 };
 
@@ -241,7 +260,7 @@ function updateCommunications() {
                 <button class="btn btn-primary" onclick="viewMessage('${message.id}')">
                     <i class="fas fa-envelope-open"></i> Read
                 </button>
-                <button class="btn btn-secondary" onclick="replyMessage('${message.id}')">
+                <button class="btn btn-secondary" onclick="replyToMessage('${message.id}')">
                     <i class="fas fa-reply"></i> Reply
                 </button>
             </div>
