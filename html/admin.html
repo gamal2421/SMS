@@ -4,44 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | School Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/admin.css">
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
 </head>
 <body>
     <header>
         <div class="logo">
             <i class="fas fa-school"></i>
-            <span> SCHOOL</span>
+            <span>SCHOOL</span>
         </div>
         <div class="user-profile">
             <div class="user-avatar" id="userAvatar">AD</div>
             <span id="userName">Loading...</span>
-            <button onclick="logout()" class="logout-btn">Logout</button>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
         </div>
     </header>
 
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('dashboard')">
-                <i class="fas fa-tachometer-alt"></i> Dashboard
-            </button>
-            <button class="tab-btn" onclick="openTab('students')">
-                <i class="fas fa-user-graduate"></i> Students
-            </button>
-            <button class="tab-btn" onclick="openTab('teachers')">
-                <i class="fas fa-chalkboard-teacher"></i> Teachers
-            </button>
-            <button class="tab-btn" onclick="openTab('classes')">
-                <i class="fas fa-school"></i> Classes
-            </button>
-            <button class="tab-btn" onclick="openTab('profile')">
-                <i class="fas fa-user"></i> Profile
-            </button>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="AdminUI.openTab('dashboard')">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </button>
+        <button class="tab-btn" onclick="AdminUI.openTab('students')">
+            <i class="fas fa-user-graduate"></i> Students
+        </button>
+        <button class="tab-btn" onclick="AdminUI.openTab('teachers')">
+            <i class="fas fa-chalkboard-teacher"></i> Teachers
+        </button>
+        <button class="tab-btn" onclick="AdminUI.openTab('classes')">
+            <i class="fas fa-chalkboard"></i> Classes
+        </button>
+    </div>
 
+    <div class="container">
         <!-- Dashboard Tab -->
         <div id="dashboard" class="tab-content active">
             <div class="stats-grid">
@@ -80,7 +78,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><i class="fas fa-user-graduate"></i> Student Management</h2>
-                    <button class="btn btn-primary" onclick="addStudent()">
+                    <button class="btn btn-primary" onclick="AdminUI.showModal('addStudentModal')">
                         <i class="fas fa-plus"></i> Add Student
                     </button>
                 </div>
@@ -112,7 +110,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><i class="fas fa-chalkboard-teacher"></i> Teacher Management</h2>
-                    <button class="btn btn-primary" onclick="addTeacher()">
+                    <button class="btn btn-primary" onclick="AdminUI.showModal('addTeacherModal')">
                         <i class="fas fa-plus"></i> Add Teacher
                     </button>
                 </div>
@@ -143,8 +141,8 @@
         <div id="classes" class="tab-content">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-school"></i> Class Management</h2>
-                    <button class="btn btn-primary" onclick="addClass()">
+                    <h2 class="card-title"><i class="fas fa-chalkboard"></i> Class Management</h2>
+                    <button class="btn btn-primary" onclick="AdminUI.showModal('addClassModal')">
                         <i class="fas fa-plus"></i> Add Class
                     </button>
                 </div>
@@ -170,146 +168,208 @@
                 </div>
             </div>
         </div>
-
-        <!-- Profile Tab -->
-        <div id="profile" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-user"></i> My Profile</h2>
-                </div>
-                <div class="card-body">
-                    <div id="profileContent">
-                        <p><strong>Name:</strong> <span id="profileName">Loading...</span></p>
-                        <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
-                        <p><strong>Role:</strong> <span id="profileRole">Admin</span></p>
-                        <div class="user-avatar" id="profileAvatar">AD</div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- Add Student Modal -->
+    <!-- Student Modal -->
     <div id="addStudentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">Add New Student</h2>
-                <span class="close-modal" onclick="closeModal('addStudentModal')">&times;</span>
+                <span class="close-modal">&times;</span>
             </div>
             <form id="addStudentForm">
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="studentFirstName">First Name</label>
-                        <input type="text" id="studentFirstName" required>
+                        <input type="text" id="studentFirstName" name="firstName" required>
                     </div>
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="studentLastName">Last Name</label>
-                        <input type="text" id="studentLastName" required>
+                        <input type="text" id="studentLastName" name="lastName" required>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="studentEmail">Email</label>
-                        <input type="email" id="studentEmail" required>
+                        <input type="email" id="studentEmail" name="email" required>
                     </div>
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="studentGrade">Grade</label>
-                        <input type="text" id="studentGrade" required>
+                        <select id="studentGrade" name="grade" required>
+                            <option value="">Select Grade</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                            <option value="11">Grade 11</option>
+                            <option value="12">Grade 12</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="studentSection">Section</label>
-                        <input type="text" id="studentSection" required>
+                        <select id="studentSection" name="section" required>
+                            <option value="">Select Section</option>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
                     </div>
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="studentContact">Contact</label>
-                        <input type="text" id="studentContact" required>
+                        <input type="tel" id="studentContact" name="contact" pattern="[0-9\-]+" required>
+                        <small>Format: 123-456-7890</small>
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeModal('addStudentModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Student</button>
+                    <button type="button" class="btn cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Student</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Add Teacher Modal -->
+    <!-- Teacher Modal -->
     <div id="addTeacherModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">Add New Teacher</h2>
-                <span class="close-modal" onclick="closeModal('addTeacherModal')">&times;</span>
+                <span class="close-modal">&times;</span>
             </div>
             <form id="addTeacherForm">
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="teacherFirstName">First Name</label>
-                        <input type="text" id="teacherFirstName" required>
+                        <input type="text" id="teacherFirstName" name="firstName" required>
                     </div>
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="teacherLastName">Last Name</label>
-                        <input type="text" id="teacherLastName" required>
+                        <input type="text" id="teacherLastName" name="lastName" required>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="teacherEmail">Email</label>
-                        <input type="email" id="teacherEmail" required>
+                        <input type="email" id="teacherEmail" name="email" required>
                     </div>
-                    <div class="form-group">
-                        <label for="teacherSubject">Subject</label>
-                        <input type="text" id="teacherSubject" required>
+                    <div class="input-field">
+                        <label for="teacherSubject">Primary Subject</label>
+                        <select id="teacherSubject" name="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="English">English</option>
+                            <option value="Science">Science</option>
+                            <option value="History">History</option>
+                            <option value="Geography">Geography</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Biology">Biology</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Physical Education">Physical Education</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="teacherContact">Contact</label>
-                        <input type="text" id="teacherContact" required>
+                    <div class="input-field">
+                        <label for="teacherContact">Contact Number</label>
+                        <input type="tel" id="teacherContact" name="contact" pattern="[0-9\-]+" required>
+                        <small>Format: 123-456-7890</small>
+                    </div>
+                    <div class="input-field">
+                        <label for="teacherQualification">Qualification</label>
+                        <input type="text" id="teacherQualification" name="qualification" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-field full-width">
+                        <label for="teacherBio">Brief Bio</label>
+                        <textarea id="teacherBio" name="bio" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeModal('addTeacherModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Teacher</button>
+                    <button type="button" class="btn cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Teacher</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Add Class Modal -->
+    <!-- Class Modal -->
     <div id="addClassModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">Add New Class</h2>
-                <span class="close-modal" onclick="closeModal('addClassModal')">&times;</span>
+                <span class="close-modal">&times;</span>
             </div>
             <form id="addClassForm">
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="input-field">
                         <label for="className">Class Name</label>
-                        <input type="text" id="className" required>
+                        <input type="text" id="className" name="name" required placeholder="e.g., Mathematics 10A">
                     </div>
-                    <div class="form-group">
-                        <label for="classGrade">Grade</label>
-                        <input type="text" id="classGrade" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="classTeacher">Teacher</label>
-                        <select id="classTeacher" required>
-                            <option value="">Select Teacher</option>
+                    <div class="input-field">
+                        <label for="classGrade">Grade Level</label>
+                        <select id="classGrade" name="grade" required>
+                            <option value="">Select Grade</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                            <option value="11">Grade 11</option>
+                            <option value="12">Grade 12</option>
                         </select>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="input-field">
+                        <label for="classTeacher">Assigned Teacher</label>
+                        <select id="classTeacher" name="teacher" required>
+                            <option value="">Select Teacher</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label for="classSubject">Subject</label>
+                        <select id="classSubject" name="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="English">English</option>
+                            <option value="Science">Science</option>
+                            <option value="History">History</option>
+                            <option value="Geography">Geography</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Biology">Biology</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Physical Education">Physical Education</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-field">
+                        <label for="classCapacity">Maximum Capacity</label>
+                        <input type="number" id="classCapacity" name="capacity" required min="1" max="50" value="30">
+                        <small>Maximum number of students allowed</small>
+                    </div>
+                    <div class="input-field">
+                        <label for="classSchedule">Schedule</label>
+                        <input type="text" id="classSchedule" name="schedule" required placeholder="e.g., Mon, Wed 9:00-10:30">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-field full-width">
+                        <label for="classDescription">Description</label>
+                        <textarea id="classDescription" name="description" rows="3" placeholder="Brief description of the class"></textarea>
+                    </div>
+                </div>
                 <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeModal('addClassModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Class</button>
+                    <button type="button" class="btn cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Class</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Scripts -->
     <script src="js/admin.js"></script>
+    <script src="js/admin-ui.js"></script>
 </body>
 </html>

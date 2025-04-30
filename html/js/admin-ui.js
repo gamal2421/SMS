@@ -56,228 +56,642 @@ const mockData = {
     }
 };
 
-// UI Functions
-function openTab(tabName) {
-    // Hide all tab contents
-    const tabContents = document.querySelectorAll('.tab-content');
-    tabContents.forEach(content => content.style.display = 'none');
+// UI Management and Event Handlers
+const AdminUI = {
+    // Initialize UI
+    init() {
+        this.setupEventListeners();
+        this.loadUserProfile();
+        this.updateDashboard();
+        this.renderClasses();
+        this.renderStudents();
+        this.renderTeachers();
+    },
 
-    // Remove active class from all tab buttons
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    tabButtons.forEach(button => button.classList.remove('active'));
+    setupEventListeners() {
+        // Setup modal handlers
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('modal')) {
+                this.hideModal(event.target.id);
+            }
+        });
 
-    // Show the selected tab content and activate its button
-    document.getElementById(tabName).style.display = 'block';
-    document.querySelector(`[onclick="openTab('${tabName}')"]`).classList.add('active');
+        document.querySelectorAll('.close-modal').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const modal = event.target.closest('.modal');
+                if (modal) {
+                    this.hideModal(modal.id);
+                }
+            });
+        });
 
-    // Load tab-specific data
-    switch(tabName) {
-        case 'dashboard':
-            updateDashboard();
-            break;
-        case 'users':
-            updateUsers();
-            break;
-        case 'classes':
-            updateClasses();
-            break;
-        case 'announcements':
-            updateAnnouncements();
-            break;
-        case 'reports':
-            updateReports();
-            break;
-        case 'settings':
-            updateSettings();
-            break;
-    }
-}
+        document.querySelectorAll('.cancel-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const modal = event.target.closest('.modal');
+                if (modal) {
+                    this.hideModal(modal.id);
+                }
+            });
+        });
 
-// Dashboard Updates
-function updateDashboard() {
-    // Update stats
-    document.getElementById('total-students').textContent = mockData.stats.totalStudents;
-    document.getElementById('total-teachers').textContent = mockData.stats.totalTeachers;
-    document.getElementById('total-classes').textContent = mockData.stats.totalClasses;
-    document.getElementById('active-users').textContent = mockData.stats.activeUsers;
+        // Set up form submissions with validation
+        const forms = {
+            'addClassForm': this.handleClassFormSubmit,
+            'addStudentForm': this.handleStudentFormSubmit,
+            'addTeacherForm': this.handleTeacherFormSubmit
+        };
 
-    // Update recent activities
-    const activitiesList = document.getElementById('recent-activities');
-    activitiesList.innerHTML = mockData.recentActivities.map(activity => `
-        <div class="activity-item">
-            <div class="activity-icon ${activity.type}">
-                <i class="fas fa-${activity.type === 'user' ? 'user' : activity.type === 'class' ? 'chalkboard' : 'cog'}"></i>
-            </div>
-            <div class="activity-details">
-                <div class="activity-action">${activity.action}</div>
-                ${activity.user ? `<div class="activity-user">${activity.user}</div>` : ''}
-                ${activity.details ? `<div class="activity-info">${activity.details}</div>` : ''}
-                <div class="activity-time">${activity.time}</div>
-            </div>
-        </div>
-    `).join('');
-}
+        Object.entries(forms).forEach(([formId, handler]) => {
+            const form = document.getElementById(formId);
+            if (form) {
+                this.setupFormValidation(form);
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (this.validateForm(form)) {
+                        handler.call(this, e);
+                    }
+                });
+            }
+        });
 
-// Users Updates
-function updateUsers() {
-    const usersList = document.getElementById('users-list');
-    const userType = document.getElementById('user-type').value;
-    const users = mockData.users[userType];
+        // Set up logout handler
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => AdminSystem.logout());
+        }
 
-    usersList.innerHTML = users.map(user => `
-        <div class="card">
-            <div class="user-header">
-                <div class="user-avatar">${user.name.split(' ').map(n => n[0]).join('')}</div>
-                <div class="user-info">
-                    <h3>${user.name}</h3>
-                    <p class="user-type">${userType.slice(0, -1)}</p>
+        // Handle escape key for modals
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                const openModal = document.querySelector('.modal[style*="display: block"]');
+                if (openModal) {
+                    this.hideModal(openModal.id);
+                }
+            }
+        });
+    },
+
+    setupFormValidation(form) {
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            // Add error message element
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            input.parentNode.insertBefore(errorDiv, input.nextSibling);
+
+            // Real-time validation
+            input.addEventListener('input', () => {
+                this.validateInput(input);
+            });
+
+            input.addEventListener('blur', () => {
+                this.validateInput(input);
+            });
+        });
+    },
+
+    validateInput(input) {
+        const errorDiv = input.nextElementSibling;
+        if (!errorDiv || !errorDiv.classList.contains('error-message')) return;
+
+        if (!input.checkValidity()) {
+            let message = input.validationMessage;
+            if (input.validity.valueMissing) {
+                message = `${input.labels[0]?.textContent || 'This field'} is required`;
+            } else if (input.validity.typeMismatch) {
+                message = `Please enter a valid ${input.type}`;
+            } else if (input.validity.patternMismatch && input.type === 'tel') {
+                message = 'Please enter a valid phone number (e.g., 123-456-7890)';
+            }
+            errorDiv.textContent = message;
+            input.classList.add('invalid');
+        } else {
+            errorDiv.textContent = '';
+            input.classList.remove('invalid');
+        }
+    },
+
+    validateForm(form) {
+        let isValid = true;
+        const inputs = form.querySelectorAll('input, select, textarea');
+        
+        inputs.forEach(input => {
+            this.validateInput(input);
+            if (!input.checkValidity()) {
+                isValid = false;
+            }
+        });
+
+        return isValid;
+    },
+
+    // User Profile UI
+    loadUserProfile() {
+        const user = AdminSystem.getCurrentUser();
+        document.getElementById('userAvatar').textContent = user.initials;
+        document.getElementById('userName').textContent = user.name;
+    },
+
+    // Tab Management
+    openTab(tabName) {
+        const tabContents = document.querySelectorAll('.tab-content');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        tabButtons.forEach(button => {
+            button.classList.remove('active');
+        });
+        
+        document.getElementById(tabName).classList.add('active');
+        document.querySelector(`[onclick="AdminUI.openTab('${tabName}')"]`).classList.add('active');
+
+        // Update content based on tab
+        switch(tabName) {
+            case 'dashboard':
+                this.updateDashboard();
+                break;
+            case 'students':
+                this.renderStudents();
+                break;
+            case 'teachers':
+                this.renderTeachers();
+                break;
+            case 'classes':
+                this.renderClasses();
+                break;
+        }
+    },
+
+    // Dashboard UI Updates
+    updateDashboard() {
+        this.updateDashboardStats();
+        this.updateActivitiesList();
+    },
+
+    updateDashboardStats() {
+        const stats = AdminSystem.getDashboardStats();
+        document.getElementById('totalStudents').textContent = stats.students;
+        document.getElementById('totalTeachers').textContent = stats.teachers;
+        document.getElementById('totalClasses').textContent = stats.classes;
+        document.getElementById('totalParents').textContent = stats.parents;
+    },
+
+    updateActivitiesList() {
+        const activities = AdminSystem.getActivities();
+        const activitiesList = document.getElementById('activitiesList');
+        if (!activitiesList) return;
+
+        activitiesList.innerHTML = activities.map(activity => `
+            <li class="activity-item">
+                <i class="fas fa-bell"></i>
+                <span>${activity.action}</span>
+                <small>${activity.timestamp}</small>
+            </li>
+        `).join('');
+    },
+
+    // Modal Management
+    showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        
+        // Reset form if exists
+        const form = modal.querySelector('form');
+        if (form) {
+            form.reset();
+            delete form.dataset.editId;
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.classList.remove('invalid');
+                const errorDiv = input.nextElementSibling;
+                if (errorDiv && errorDiv.classList.contains('error-message')) {
+                    errorDiv.textContent = '';
+                }
+            });
+        }
+
+        // If showing add class modal, populate teacher dropdown
+        if (modalId === 'addClassModal') {
+            this.populateTeacherDropdown();
+        }
+
+        modal.style.display = 'block';
+    },
+
+    hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        modal.style.display = 'none';
+    },
+
+    // Class Management UI
+    populateTeacherDropdown() {
+        const teacherSelect = document.getElementById('classTeacher');
+        if (!teacherSelect) return;
+
+        const teachers = AdminSystem.getTeachers();
+        
+        // Clear existing options
+        teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+        
+        // Add teacher options
+        teachers.forEach(teacher => {
+            const option = document.createElement('option');
+            option.value = `${teacher.firstName} ${teacher.lastName}`;
+            option.textContent = `${teacher.firstName} ${teacher.lastName} (${teacher.subject})`;
+            teacherSelect.appendChild(option);
+        });
+    },
+
+    renderClasses() {
+        const tableBody = document.getElementById('classesTableBody');
+        if (!tableBody) return;
+
+        const classes = AdminSystem.getClasses();
+        
+        tableBody.innerHTML = classes.map(cls => `
+            <tr>
+                <td>${cls.name}</td>
+                <td>${cls.grade}</td>
+                <td>${cls.teacher}</td>
+                <td>${cls.currentStudents}/${cls.capacity}</td>
+                <td>
+                    <button class="btn btn-small" onclick="AdminUI.showEditClassModal(${cls.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-small btn-danger" onclick="AdminUI.deleteClass(${cls.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
+    showEditClassModal(classId) {
+        const classData = AdminSystem.getClasses().find(c => c.id === classId);
+        if (!classData) return;
+
+        // Show the modal and populate fields
+        const modal = document.getElementById('addClassModal');
+        if (!modal) return;
+
+        this.showModal('addClassModal');
+
+        // Update modal title
+        modal.querySelector('.modal-title').textContent = 'Edit Class';
+
+        // Populate form fields
+        document.getElementById('className').value = classData.name;
+        document.getElementById('classGrade').value = classData.grade;
+        document.getElementById('classTeacher').value = classData.teacher;
+        document.getElementById('classSubject').value = classData.subject;
+        document.getElementById('classCapacity').value = classData.capacity;
+        document.getElementById('classSchedule').value = classData.schedule;
+        document.getElementById('classDescription').value = classData.description || '';
+
+        // Update form submission handler
+        const form = document.getElementById('addClassForm');
+        if (form) {
+            form.onsubmit = (e) => this.handleClassFormSubmit(e, classId);
+        }
+    },
+
+    async deleteClass(classId) {
+        if (!confirm('Are you sure you want to delete this class?')) return;
+
+        const result = AdminSystem.deleteClass(classId);
+        
+        if (result.success) {
+            this.showNotification('Class deleted successfully', 'success');
+            this.renderClasses();
+            this.updateDashboardStats();
+        } else {
+            this.showNotification(result.error || 'Failed to delete class', 'error');
+        }
+    },
+
+    handleClassFormSubmit(event, classId = null) {
+        event.preventDefault();
+        
+        const formData = {
+            name: document.getElementById('className').value,
+            grade: document.getElementById('classGrade').value,
+            teacher: document.getElementById('classTeacher').value,
+            subject: document.getElementById('classSubject').value,
+            capacity: parseInt(document.getElementById('classCapacity').value),
+            schedule: document.getElementById('classSchedule').value,
+            description: document.getElementById('classDescription').value
+        };
+
+        let result;
+        if (classId) {
+            // Edit existing class
+            result = AdminSystem.updateClass(classId, formData);
+        } else {
+            // Add new class
+            result = AdminSystem.addClass(formData);
+        }
+
+        if (result.success) {
+            this.showNotification(
+                `Class ${classId ? 'updated' : 'added'} successfully`,
+                'success'
+            );
+            this.hideModal('addClassModal');
+            this.renderClasses();
+            this.updateDashboardStats();
+        } else {
+            this.showNotification(result.error || 'Operation failed', 'error');
+        }
+    },
+
+    // Students Management
+    renderStudents() {
+        const tableBody = document.getElementById('studentsTableBody');
+        if (!tableBody) return;
+
+        const students = AdminSystem.getStudents();
+        
+        tableBody.innerHTML = students.map(student => `
+            <tr>
+                <td>${student.firstName} ${student.lastName}</td>
+                <td>${student.grade}</td>
+                <td>${student.section}</td>
+                <td>${student.contact}</td>
+                <td>
+                    <button class="btn btn-small" onclick="AdminUI.editStudent(${student.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-small btn-danger" onclick="AdminUI.deleteStudent(${student.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
+    handleStudentFormSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const studentData = Object.fromEntries(formData.entries());
+
+        try {
+            if (form.dataset.editId) {
+                // Update existing student
+                const result = AdminSystem.updateStudent(parseInt(form.dataset.editId), studentData);
+                if (result) {
+                    this.showNotification('Student updated successfully');
+                    this.hideModal('addStudentModal');
+                    this.renderStudents();
+                }
+            } else {
+                // Add new student
+                const result = AdminSystem.addStudent(studentData);
+                if (result) {
+                    this.showNotification('Student added successfully');
+                    this.hideModal('addStudentModal');
+                    this.renderStudents();
+                }
+            }
+        } catch (error) {
+            this.showNotification(error.message, 'error');
+        }
+    },
+
+    editStudent(id) {
+        const student = AdminSystem.getStudents().find(s => s.id === id);
+        if (!student) return;
+
+        const form = document.getElementById('addStudentForm');
+        if (!form) return;
+
+        // Update modal title
+        const modalTitle = document.querySelector('#addStudentModal .modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Edit Student';
+        }
+
+        // Fill form with student data
+        document.getElementById('studentFirstName').value = student.firstName;
+        document.getElementById('studentLastName').value = student.lastName;
+        document.getElementById('studentEmail').value = student.email;
+        document.getElementById('studentGrade').value = student.grade;
+        document.getElementById('studentSection').value = student.section;
+        document.getElementById('studentContact').value = student.contact;
+
+        // Set form to edit mode
+        form.dataset.editId = id;
+
+        this.showModal('addStudentModal');
+    },
+
+    deleteStudent(id) {
+        if (!confirm('Are you sure you want to delete this student?')) return;
+
+        if (AdminSystem.deleteStudent(id)) {
+            this.showNotification('Student deleted successfully', 'success');
+            this.renderStudents();
+            this.updateDashboardStats();
+        } else {
+            this.showNotification('Failed to delete student', 'error');
+        }
+    },
+
+    // Teachers Management
+    renderTeachers() {
+        const tableBody = document.getElementById('teachersTableBody');
+        if (!tableBody) return;
+
+        const teachers = AdminSystem.getTeachers();
+        
+        tableBody.innerHTML = teachers.map(teacher => `
+            <tr>
+                <td>
+                    <div class="user-info">
+                        <div class="user-name">${teacher.firstName} ${teacher.lastName}</div>
+                        <div class="user-email">${teacher.email}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="subject-info">
+                        <div class="subject-name">${teacher.subject}</div>
+                        <div class="qualification">${teacher.qualification}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="classes-list">
+                        ${teacher.assignedClasses.length ? 
+                            teacher.assignedClasses.map(cls => `<span class="class-tag">${cls}</span>`).join('') :
+                            '<span class="no-classes">No classes assigned</span>'
+                        }
+                    </div>
+                </td>
+                <td>${teacher.contact}</td>
+                <td>
+                    <button class="btn btn-small" onclick="AdminUI.editTeacher(${teacher.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-small btn-info" onclick="AdminUI.viewTeacherDetails(${teacher.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-small btn-danger" onclick="AdminUI.deleteTeacher(${teacher.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
+    handleTeacherFormSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const teacherData = Object.fromEntries(formData.entries());
+
+        try {
+            if (form.dataset.editId) {
+                // Update existing teacher
+                const result = AdminSystem.updateTeacher(parseInt(form.dataset.editId), teacherData);
+                if (result) {
+                    this.showNotification('Teacher updated successfully');
+                    this.hideModal('addTeacherModal');
+                    this.renderTeachers();
+                }
+            } else {
+                // Add new teacher
+                const result = AdminSystem.addTeacher(teacherData);
+                if (result) {
+                    this.showNotification('Teacher added successfully');
+                    this.hideModal('addTeacherModal');
+                    this.renderTeachers();
+                }
+            }
+        } catch (error) {
+            this.showNotification(error.message, 'error');
+        }
+    },
+
+    editTeacher(id) {
+        const teacher = AdminSystem.getTeachers().find(t => t.id === id);
+        if (!teacher) return;
+
+        const form = document.getElementById('addTeacherForm');
+        if (!form) return;
+
+        // Update modal title
+        const modalTitle = document.querySelector('#addTeacherModal .modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Edit Teacher';
+        }
+
+        // Fill form with teacher data
+        document.getElementById('teacherFirstName').value = teacher.firstName;
+        document.getElementById('teacherLastName').value = teacher.lastName;
+        document.getElementById('teacherEmail').value = teacher.email;
+        document.getElementById('teacherSubject').value = teacher.subject;
+        document.getElementById('teacherContact').value = teacher.contact;
+        document.getElementById('teacherQualification').value = teacher.qualification || '';
+        document.getElementById('teacherBio').value = teacher.bio || '';
+
+        // Set form to edit mode
+        form.dataset.editId = id;
+
+        this.showModal('addTeacherModal');
+    },
+
+    viewTeacherDetails(id) {
+        const teacher = AdminSystem.getTeachers().find(t => t.id === id);
+        if (!teacher) return;
+
+        const detailsHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Teacher Details</h2>
+                    <span class="close-modal">&times;</span>
                 </div>
-                <div class="user-status ${user.status.toLowerCase()}">${user.status}</div>
-            </div>
-            <div class="user-details">
-                ${userType === 'students' ? `
-                    <p><strong>Grade:</strong> ${user.grade}</p>
-                ` : userType === 'teachers' ? `
-                    <p><strong>Subjects:</strong> ${user.subjects.join(', ')}</p>
-                ` : `
-                    <p><strong>Children:</strong> ${user.children.join(', ')}</p>
-                `}
-                <p><strong>Join Date:</strong> ${user.joinDate}</p>
-            </div>
-            <div class="card-actions">
-                <button class="btn btn-secondary" onclick="editUser('${user.id}')">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn btn-secondary" onclick="viewUserDetails('${user.id}')">
-                    <i class="fas fa-eye"></i> View
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Classes Updates
-function updateClasses() {
-    const classesList = document.getElementById('classes-list');
-    classesList.innerHTML = mockData.classes.map(classItem => `
-        <div class="card">
-            <h3>${classItem.name}</h3>
-            <p><strong>Teacher:</strong> ${classItem.teacher}</p>
-            <p><strong>Students:</strong> ${classItem.students}</p>
-            <p><strong>Subjects:</strong> ${classItem.subjects.join(', ')}</p>
-            <div class="card-actions">
-                <button class="btn btn-secondary" onclick="editClass('${classItem.id}')">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn btn-secondary" onclick="viewClassDetails('${classItem.id}')">
-                    <i class="fas fa-eye"></i> View
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Announcements Updates
-function updateAnnouncements() {
-    const announcementsList = document.getElementById('announcements-list');
-    announcementsList.innerHTML = mockData.announcements.map(announcement => `
-        <div class="card">
-            <div class="announcement-header ${announcement.priority}">
-                <h3>${announcement.title}</h3>
-                <span class="announcement-date">${announcement.date}</span>
-            </div>
-            <p>${announcement.content}</p>
-            <div class="card-actions">
-                <button class="btn btn-secondary" onclick="editAnnouncement('${announcement.id}')">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn btn-secondary" onclick="deleteAnnouncement('${announcement.id}')">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Reports Updates
-function updateReports() {
-    // Update attendance chart
-    const attendanceData = mockData.reports.attendance;
-    document.getElementById('attendance-stats').innerHTML = `
-        <div class="chart-container">
-            <h3>Monthly Attendance Rate</h3>
-            <div class="chart">
-                ${attendanceData.data.map((value, index) => `
-                    <div class="chart-bar" style="height: ${value}%">
-                        <span class="chart-value">${value}%</span>
-                        <span class="chart-label">${attendanceData.labels[index]}</span>
+                <div class="modal-body">
+                    <div class="teacher-profile">
+                        <div class="teacher-header">
+                            <div class="teacher-avatar">
+                                ${teacher.firstName[0]}${teacher.lastName[0]}
+                            </div>
+                            <div class="teacher-info">
+                                <h3>${teacher.firstName} ${teacher.lastName}</h3>
+                                <p class="teacher-subject">${teacher.subject}</p>
+                            </div>
+                        </div>
+                        <div class="teacher-details">
+                            <p><strong>Email:</strong> ${teacher.email}</p>
+                            <p><strong>Contact:</strong> ${teacher.contact}</p>
+                            <p><strong>Qualification:</strong> ${teacher.qualification}</p>
+                            <p><strong>Bio:</strong> ${teacher.bio || 'No bio available'}</p>
+                        </div>
+                        <div class="teacher-classes">
+                            <h4>Assigned Classes</h4>
+                            ${teacher.assignedClasses.length ? `
+                                <ul class="classes-list">
+                                    ${teacher.assignedClasses.map(cls => `
+                                        <li class="class-item">${cls}</li>
+                                    `).join('')}
+                                </ul>
+                            ` : '<p>No classes assigned</p>'}
+                        </div>
                     </div>
-                `).join('')}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn cancel-btn">Close</button>
+                </div>
             </div>
-        </div>
-    `;
+        `;
 
-    // Update performance chart
-    const performanceData = mockData.reports.performance;
-    document.getElementById('performance-stats').innerHTML = `
-        <div class="chart-container">
-            <h3>Grade-wise Performance</h3>
-            <div class="chart">
-                ${performanceData.data.map((value, index) => `
-                    <div class="chart-bar" style="height: ${value}%">
-                        <span class="chart-value">${value}%</span>
-                        <span class="chart-label">${performanceData.labels[index]}</span>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
-}
+        // Create modal element if it doesn't exist
+        let modal = document.getElementById('teacherDetailsModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'teacherDetailsModal';
+            document.body.appendChild(modal);
+        }
 
-// Settings Updates
-function updateSettings() {
-    // This would typically load system settings, but for now we'll just show a message
-    document.getElementById('settings-content').innerHTML = `
-        <div class="settings-section">
-            <h3>System Settings</h3>
-            <div class="form-group">
-                <label class="form-label">School Name</label>
-                <input type="text" class="form-input" value="International School" disabled>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Academic Year</label>
-                <input type="text" class="form-input" value="2023-2024" disabled>
-            </div>
-            <div class="form-group">
-                <label class="form-label">System Theme</label>
-                <select class="form-input">
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </div>
-        </div>
-    `;
-}
+        modal.innerHTML = detailsHTML;
+        this.showModal('teacherDetailsModal');
+    },
 
-// Modal Functions
-function showModal(modalId) {
-    document.getElementById(modalId).style.display = 'block';
-}
+    deleteTeacher(id) {
+        if (!confirm('Are you sure you want to delete this teacher?')) return;
 
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-}
+        const result = AdminSystem.deleteTeacher(id);
+        if (result.success) {
+            this.showNotification('Teacher deleted successfully', 'success');
+            this.renderTeachers();
+            this.updateDashboardStats();
+        } else {
+            this.showNotification(result.error || 'Failed to delete teacher', 'error');
+        }
+    },
 
-// Initialize page
-document.addEventListener('DOMContentLoaded', () => {
-    // Update user info in header
-    const user = mockData.currentUser;
-    document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
-    document.getElementById('userAvatar').textContent = `${user.firstName[0]}${user.lastName[0]}`;
-    
-    // Set initial active tab
-    openTab('dashboard');
-    
-    // Show welcome toast
-    showToast('Welcome back, ' + user.firstName + '!', 'info');
-}); 
+    // Notification System
+    showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Remove notification after 3 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+};
+
+// Initialize UI when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => AdminUI.init());

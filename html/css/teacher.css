@@ -84,16 +84,18 @@ body {
 }
 
 .stat-card {
-    background-color: var(--white);
+    background: var(--background-light);
     padding: 1.5rem;
     border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
-    text-align: center;
-    transition: transform 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    animation: fadeIn 0.5s ease-out;
+    animation-fill-mode: both;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
 }
 
 .stat-value {
@@ -132,44 +134,45 @@ body {
 }
 
 .schedule-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 1rem;
 }
 
 .schedule-item {
-    display: flex;
-    align-items: center;
+    background-color: var(--background-light);
     padding: 1rem;
-    background-color: var(--gray-100);
     border-radius: var(--border-radius);
-    transition: transform 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
 }
 
 .schedule-item:hover {
     transform: translateX(5px);
-    background-color: var(--gray-200);
+    background-color: var(--background-purple);
 }
 
 .schedule-time {
-    min-width: 100px;
     font-weight: 600;
     color: var(--primary-color);
+    min-width: 100px;
 }
 
 .schedule-details {
     flex: 1;
+    margin: 0 1rem;
 }
 
 .schedule-class {
     font-weight: 500;
-    color: var(--gray-800);
     margin-bottom: 0.25rem;
 }
 
 .schedule-room {
     font-size: 0.875rem;
-    color: var(--gray-600);
+    color: var(--text-muted);
 }
 
 /* Pending Tasks Section */
@@ -249,11 +252,6 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.stat-card {
-    animation: fadeIn 0.5s ease-out;
-    animation-fill-mode: both;
 }
 
 .stat-card:nth-child(1) { animation-delay: 0.1s; }
@@ -363,41 +361,6 @@ body {
 }
 
 /* Teacher Dashboard Styles */
-.schedule-list {
-    display: grid;
-    gap: 1rem;
-}
-
-.schedule-item {
-    background-color: var(--white);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.schedule-time {
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.schedule-details {
-    flex: 1;
-    margin: 0 1rem;
-}
-
-.schedule-class {
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-}
-
-.schedule-room {
-    font-size: 0.875rem;
-    color: var(--gray-600);
-}
-
 .attendance-filters {
     display: flex;
     gap: 1rem;
@@ -407,8 +370,8 @@ body {
 .attendance-filters select,
 .attendance-filters input {
     padding: 0.5rem;
-    border: 1px solid var(--gray-300);
-    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
 }
 
 .attendance-list {
@@ -419,7 +382,7 @@ body {
     display: flex;
     align-items: center;
     padding: 0.75rem;
-    border-bottom: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .attendance-student {
@@ -432,24 +395,30 @@ body {
 
 .attendance-status select {
     padding: 0.25rem;
-    border: 1px solid var(--gray-300);
-    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
 }
 
 /* Assignment styles */
 .assignment-card {
-    background-color: var(--white);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-light);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.assignment-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
 }
 
 .assignment-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .assignment-title {
@@ -459,20 +428,12 @@ body {
 
 .assignment-due {
     font-size: 0.875rem;
-    color: var(--gray-600);
+    color: var(--text-muted);
 }
 
 .assignment-description {
     margin: 0.5rem 0;
-    color: var(--gray-600);
-}
-
-.assignment-status {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 500;
+    color: var(--text-muted);
 }
 
 /* Modal Styles */

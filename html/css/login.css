@@ -81,4 +81,34 @@
     text-align: center;
     margin-top: 1rem;
     display: none;
+}
+
+/* Toast Styles */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    color: white;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.success {
+    background: #28a745; /* A different shade of green */
+}
+
+.toast.error {
+    background: #f44336; /* Red for error messages */
+}
+
+.toast.info {
+    background: var(--primary-color); /* Use primary color for info messages */
 } 
