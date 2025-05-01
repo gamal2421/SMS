@@ -194,7 +194,7 @@ const AdminUI = {
 
     // Tab Management
     openTab(tabName) {
-        const tabContents = document.querySelectorAll('.tab-content');
+    const tabContents = document.querySelectorAll('.tab-content');
         const tabButtons = document.querySelectorAll('.tab-btn');
         
         tabContents.forEach(content => {
@@ -209,20 +209,20 @@ const AdminUI = {
         document.querySelector(`[onclick="AdminUI.openTab('${tabName}')"]`).classList.add('active');
 
         // Update content based on tab
-        switch(tabName) {
-            case 'dashboard':
+    switch(tabName) {
+        case 'dashboard':
                 this.updateDashboard();
                 break;
             case 'students':
                 this.renderStudents();
-                break;
+            break;
             case 'teachers':
                 this.renderTeachers();
-                break;
-            case 'classes':
+            break;
+        case 'classes':
                 this.renderClasses();
-                break;
-        }
+            break;
+    }
     },
 
     // Dashboard UI Updates
@@ -322,13 +322,13 @@ const AdminUI = {
                 <td>
                     <button class="btn btn-small" onclick="AdminUI.showEditClassModal(${cls.id})">
                         <i class="fas fa-edit"></i>
-                    </button>
+                </button>
                     <button class="btn btn-small btn-danger" onclick="AdminUI.deleteClass(${cls.id})">
                         <i class="fas fa-trash"></i>
-                    </button>
+                </button>
                 </td>
             </tr>
-        `).join('');
+    `).join('');
     },
 
     showEditClassModal(classId) {
@@ -425,13 +425,13 @@ const AdminUI = {
                 <td>
                     <button class="btn btn-small" onclick="AdminUI.editStudent(${student.id})">
                         <i class="fas fa-edit"></i>
-                    </button>
+                </button>
                     <button class="btn btn-small btn-danger" onclick="AdminUI.deleteStudent(${student.id})">
                         <i class="fas fa-trash"></i>
-                    </button>
+                </button>
                 </td>
             </tr>
-        `).join('');
+    `).join('');
     },
 
     handleStudentFormSubmit(event) {
@@ -521,7 +521,7 @@ const AdminUI = {
                     <div class="subject-info">
                         <div class="subject-name">${teacher.subject}</div>
                         <div class="qualification">${teacher.qualification}</div>
-                    </div>
+            </div>
                 </td>
                 <td>
                     <div class="classes-list">
@@ -637,17 +637,17 @@ const AdminUI = {
                                 <ul class="classes-list">
                                     ${teacher.assignedClasses.map(cls => `
                                         <li class="class-item">${cls}</li>
-                                    `).join('')}
+                `).join('')}
                                 </ul>
                             ` : '<p>No classes assigned</p>'}
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
+            </div>
                 <div class="modal-footer">
                     <button class="btn cancel-btn">Close</button>
-                </div>
             </div>
-        `;
+        </div>
+    `;
 
         // Create modal element if it doesn't exist
         let modal = document.getElementById('teacherDetailsModal');
