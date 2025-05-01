@@ -2,12 +2,12 @@
 const AdminSystem = {
     // Mock Data - In a real system, this would be fetched from a backend
     data: {
-        students: [
-            { id: 1, firstName: 'John', lastName: 'Smith', email: 'john@school.com', grade: '10', section: 'A', contact: '123-456-7890' },
-            { id: 2, firstName: 'Sarah', lastName: 'Johnson', email: 'sarah@school.com', grade: '11', section: 'B', contact: '123-456-7891' },
-            { id: 3, firstName: 'Mike', lastName: 'Wilson', email: 'mike@school.com', grade: '9', section: 'C', contact: '123-456-7892' }
-        ],
-        teachers: [
+    students: [
+        { id: 1, firstName: 'John', lastName: 'Smith', email: 'john@school.com', grade: '10', section: 'A', contact: '123-456-7890' },
+        { id: 2, firstName: 'Sarah', lastName: 'Johnson', email: 'sarah@school.com', grade: '11', section: 'B', contact: '123-456-7891' },
+        { id: 3, firstName: 'Mike', lastName: 'Wilson', email: 'mike@school.com', grade: '9', section: 'C', contact: '123-456-7892' }
+    ],
+    teachers: [
             { 
                 id: 1, 
                 firstName: 'Jane', 
@@ -41,8 +41,8 @@ const AdminSystem = {
                 bio: 'Specializes in practical science experiments and interactive learning.',
                 assignedClasses: ['Science 9C', 'Physics 11A']
             }
-        ],
-        classes: [
+    ],
+    classes: [
             { 
                 id: 1, 
                 name: 'Mathematics 10A', 
@@ -82,17 +82,17 @@ const AdminSystem = {
                 room: 'Lab 1',
                 status: 'active'
             }
-        ],
-        activities: [
-            { action: 'New student registered', timestamp: '2 hours ago' },
-            { action: 'Teacher updated profile', timestamp: '3 hours ago' },
-            { action: 'New class created', timestamp: '1 day ago' },
-            { action: 'System maintenance completed', timestamp: '2 days ago' }
+    ],
+    activities: [
+        { action: 'New student registered', timestamp: '2 hours ago' },
+        { action: 'Teacher updated profile', timestamp: '3 hours ago' },
+        { action: 'New class created', timestamp: '1 day ago' },
+        { action: 'System maintenance completed', timestamp: '2 days ago' }
         ],
         currentUser: {
-            initials: 'AD',
-            name: 'Admin User',
-            email: 'admin@school.com'
+        initials: 'AD',
+        name: 'Admin User',
+        email: 'admin@school.com'
         }
     },
 
@@ -369,7 +369,7 @@ const AdminSystem = {
             ? Math.max(...this.data.classes.map(c => c.id)) + 1 
             : 1;
             
-        const newClass = { 
+    const newClass = {
             id: newId,
             ...classData,
             currentStudents: 0,

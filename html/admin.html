@@ -44,31 +44,87 @@
         <div id="dashboard" class="tab-content active">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value" id="totalStudents">0</div>
-                    <div class="stat-label">Total Students</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalStudents">0</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="totalTeachers">0</div>
-                    <div class="stat-label">Total Teachers</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalTeachers">0</div>
+                        <div class="stat-label">Total Teachers</div>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="totalClasses">0</div>
-                    <div class="stat-label">Total Classes</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-chalkboard"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalClasses">0</div>
+                        <div class="stat-label">Total Classes</div>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="totalParents">0</div>
-                    <div class="stat-label">Total Parents</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalParents">0</div>
+                        <div class="stat-label">Total Parents</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fas fa-bell"></i> Recent Activities</h2>
+            <div class="activity-card">
+                <div class="activity-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-bell activity-icon"></i>
+                        Recent Activities
+                    </h2>
                 </div>
-                <div class="card-body">
-                    <ul class="activity-list" id="activitiesList">
-                        <li class="loading">Loading activities...</li>
-                    </ul>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon student">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">New student registered</div>
+                            <div class="activity-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon teacher">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Teacher updated profile</div>
+                            <div class="activity-time">3 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon class">
+                            <i class="fas fa-chalkboard"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">New class created</div>
+                            <div class="activity-time">1 day ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon system">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">System maintenance completed</div>
+                            <div class="activity-time">2 days ago</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

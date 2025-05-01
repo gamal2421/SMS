@@ -20,6 +20,10 @@
                     <span id="userName">David Wilson</span>
                     <div class="avatar" id="userAvatar">DW</div>
                 </div>
+                <button class="btn btn-logout" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
             </div>
         </header>
 
@@ -320,5 +324,21 @@
     <script src="js/ui.js"></script>
     <script src="js/common.js"></script>
     <script src="js/parent-ui.js"></script>
+    <script>
+        // Logout functionality
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Add loading state
+                const logoutBtn = document.querySelector('.btn-logout');
+                logoutBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging out...';
+                logoutBtn.disabled = true;
+
+                // Simulate logout process (replace with actual logout API call)
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+    </script>
 </body>
 </html>

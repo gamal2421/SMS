@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule - Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/student.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="schedule.html" class="nav-item active">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Schedule</span>
+            </a>
+            <a href="assignments.html" class="nav-item">
+                <i class="fas fa-tasks"></i>
+                <span>Assignments</span>
+            </a>
+            <a href="grades.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Grades</span>
+            </a>
+            <a href="attendance.html" class="nav-item">
+                <i class="fas fa-user-check"></i>
+                <span>Attendance</span>
+            </a>
+        </nav>
+
+        <!-- Schedule Section -->
+        <div class="schedule-container">
+            <div class="schedule-header">
+                <h2><i class="fas fa-calendar-alt"></i> Weekly Schedule</h2>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="weekly-schedule">
+                    <thead>
+                        <tr>
+                            <th><i class="far fa-clock"></i> Time</th>
+                            <th><i class="fas fa-calendar-day"></i> Monday</th>
+                            <th><i class="fas fa-calendar-day"></i> Tuesday</th>
+                            <th><i class="fas fa-calendar-day"></i> Wednesday</th>
+                            <th><i class="fas fa-calendar-day"></i> Thursday</th>
+                            <th><i class="fas fa-calendar-day"></i> Friday</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Schedule content will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="loading-spinner" style="display: none;">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <span>Loading schedule...</span>
+    </div>
+
+    <!-- Error message template -->
+    <template id="error-template">
+        <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Unable to load schedule. Please try again later.</span>
+        </div>
+    </template>
+
+    <script src="js/schedule.js"></script>
+</body>
+</html> 
