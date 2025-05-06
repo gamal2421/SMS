@@ -4,122 +4,194 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - School Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/student.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/attendance.css">
     <style>
-        /* Additional styles specific to student page */
-        .progress-bar {
+        :root {
+            --primary-color: #6a0dad;
+            --secondary-color: #8a2be2;
+            --text-dark: #333333;
+            --border-color: #dee2e6;
+        }
+
+        /* Modal Styles */
+        #assignmentModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 8px;
-            background: var(--background-purple);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
             height: 100%;
-            background: var(--primary-color);
-            transition: width 0.3s ease;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
         }
 
-        .attendance-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .attendance-summary .card {
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .submit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .file-input-container {
+            border: 2px dashed var(--primary-color);
+            padding: 2rem;
+            border-radius: 8px;
             text-align: center;
-            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
         }
 
-        .attendance-summary h3 {
+        .file-input-container:hover {
+            background: #eef1f6;
+            border-color: var(--secondary-color);
+        }
+
+        .file-input-container i {
+            font-size: 2rem;
             color: var(--primary-color);
             margin-bottom: 1rem;
+            display: block;
         }
 
-        .classes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem 0;
+        .file-input-container p {
+            margin: 0;
+            color: var(--text-dark);
         }
 
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-color);
-            color: var(--text-light);
-            border-radius: 50%;
-            display: flex;
+        .file-input-container small {
+            display: block;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        #assignmentFile {
+            display: none;
+        }
+
+        #selectedFile {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #e3f2fd;
+            border-radius: 4px;
+            color: var(--text-dark);
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1.2rem;
-            margin-right: 1rem;
         }
 
-        .tab-btn {
-            background: transparent;
+        #selectedFile i {
+            cursor: pointer;
+            color: #dc3545;
+        }
+
+        textarea {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--text-dark);
             border: none;
             padding: 0.75rem 1.5rem;
-            color: var(--text-dark);
-            font-weight: 500;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .tab-btn:hover {
-            background: var(--background-purple);
-            color: var(--primary-color);
+        .btn-secondary:hover {
+            background: #dee2e6;
         }
 
-        .tab-btn.active {
+        .btn-primary {
             background: var(--primary-color);
-            color: var(--text-light);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .tab-content {
-            display: none;
-            padding: 2rem 0;
+        .btn-primary:hover {
+            background: var(--secondary-color);
         }
 
-        .tab-content.active {
-            display: block;
+        .btn-primary:disabled {
+            background: #b8b8b8;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="header-left">
-                <h1>Student Dashboard</h1>
-            </div>
-            <div class="header-right">
-                <div class="user-info">
-                    <div class="user-avatar">JS</div>
-                    <div class="user-details">
-                        <span class="user-name">John Smith</span>
-                        <span class="user-grade">Grade 10-A</span>
-                    </div>
+    <nav class="top-nav">
+        <div class="nav-brand">Student Dashboard</div>
+        <div class="nav-profile">
+            <span id="studentName">Loading...</span>
+            <button onclick="logout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
-                <button class="btn btn-logout" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                </button>
-        </div>
-    </header>
+    </nav>
 
-        <!-- Navigation -->
-        <nav class="app-nav">
+    <div class="container">
+        <div class="tabs">
             <button class="tab-btn active" data-tab="dashboard">
                 <i class="fas fa-home"></i> Dashboard
             </button>
@@ -133,315 +205,125 @@
                 <i class="fas fa-chart-line"></i> Grades
             </button>
             <button class="tab-btn" data-tab="attendance">
-                <i class="fas fa-user-check"></i> Attendance
+                <i class="fas fa-clipboard-check"></i> Attendance
             </button>
-        </nav>
+        </div>
 
-        <!-- Main Content -->
-        <main class="app-main">
+        <div class="tab-content">
             <!-- Dashboard Tab -->
-            <div id="dashboard" class="tab-content active">
+            <div class="tab-pane active" id="dashboard">
                 <div class="dashboard-grid">
-                    <div class="main-content">
-                        <!-- Stats Section -->
-                        <div class="stats-section">
-                            <div class="stat-card">
-                                <h3>Attendance Rate</h3>
-                                <p>95%</p>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 95%"></div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Pending Assignments</h3>
-                                <p>3</p>
-                                <span class="status warning">Due Soon</span>
-        </div>
-                            <div class="stat-card">
-                                <h3>Upcoming Tests</h3>
-                                <p>2</p>
-                                <span class="status info">This Week</span>
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-user-graduate"></i> Profile</h3>
+                        <div id="profileInfo">Loading...</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-chart-pie"></i> Attendance Rate</h3>
+                        <div id="attendanceRate">Loading...</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-tasks"></i> Pending Assignments</h3>
+                        <div id="pendingAssignments">Loading...</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-star"></i> Average Grade</h3>
+                        <div id="averageGrade">Loading...</div>
+                    </div>
                 </div>
-                            <div class="stat-card">
-                                <h3>Average Grade</h3>
-                                <p>88%</p>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 88%"></div>
-                </div>
-            </div>
-        </div>
-
-                        <!-- Today's Schedule -->
-                        <div class="schedule-section">
-                            <h2><i class="fas fa-clock"></i> Today's Schedule</h2>
-                            <div class="schedule-list">
-                                <div class="schedule-period">
-                                    <span class="period-time">8:00 AM - 9:30 AM</span>
-                                    <div class="period-details">
-                                        <h4>Mathematics</h4>
-                                        <p>Room 301 • Mr. Johnson</p>
-                                    </div>
-                                </div>
-                                <div class="schedule-period">
-                                    <span class="period-time">9:45 AM - 11:15 AM</span>
-                                    <div class="period-details">
-                                        <h4>Physics</h4>
-                                        <p>Room 205 • Ms. Thompson</p>
-                                    </div>
-                                </div>
-                                <div class="schedule-period">
-                                    <span class="period-time">11:30 AM - 1:00 PM</span>
-                                    <div class="period-details">
-                                        <h4>English Literature</h4>
-                                        <p>Room 102 • Mrs. Davis</p>
-                                    </div>
-                </div>
-                </div>
-            </div>
-        </div>
-
-                    <!-- Announcements Section -->
-                    <div class="announcements-section">
-                        <h2><i class="fas fa-bullhorn"></i> Announcements</h2>
-                        <div class="announcements-list">
-                            <div class="card">
-                                <div class="announcement-header">
-                                    <h3>Mid-term Exams</h3>
-                                    <span class="announcement-date">Today</span>
-                                </div>
-                                <p>Mid-term examinations will begin next week. Please check your exam schedule and prepare accordingly.</p>
-                            </div>
-                            <div class="card">
-                                <div class="announcement-header">
-                                    <h3>Science Fair</h3>
-                                    <span class="announcement-date">Yesterday</span>
-                                </div>
-                                <p>Register for the annual science fair. Last date for registration is March 25th. Don't miss this opportunity!</p>
-                            </div>
-            <div class="card">
-                                <div class="announcement-header">
-                                    <h3>Sports Day</h3>
-                                    <span class="announcement-date">2 days ago</span>
-                </div>
-                                <p>Annual sports day will be held on April 15th. Sign up for your preferred events at the PE department.</p>
-                </div>
-            </div>
-        </div>
+                <div class="dashboard-card full-width">
+                    <h3><i class="fas fa-calendar-day"></i> Today's Schedule</h3>
+                    <div id="todaySchedule">Loading...</div>
                 </div>
             </div>
 
             <!-- Schedule Tab -->
-            <div id="schedule" class="tab-content">
+            <div class="tab-pane" id="schedule">
                 <div class="schedule-container">
-                    <h2 class="section-title">
-                        <i class="fas fa-calendar"></i> Weekly Schedule
-                    </h2>
-                    <div class="timetable">
-                        <table class="schedule-table">
-                            <thead>
-                                <tr>
-                                    <th class="time-header">Time</th>
-                                    <th>Monday</th>
-                                    <th>Tuesday</th>
-                                    <th>Wednesday</th>
-                                    <th>Thursday</th>
-                                    <th>Friday</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="time-slot">8:00 AM - 9:30 AM</td>
-                                    <td class="subject-slot mathematics">
-                                        <div class="subject-info">
-                                            <h4>Mathematics</h4>
-                                            <p>Room 301 • Mr. Johnson</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot biology">
-                                        <div class="subject-info">
-                                            <h4>Biology</h4>
-                                            <p>Room 401 • Dr. Miller</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot mathematics">
-                                        <div class="subject-info">
-                                            <h4>Mathematics</h4>
-                                            <p>Room 301 • Mr. Johnson</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot physics">
-                                        <div class="subject-info">
-                                            <h4>Physics</h4>
-                                            <p>Room 205 • Ms. Thompson</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot chemistry">
-                                        <div class="subject-info">
-                                            <h4>Chemistry</h4>
-                                            <p>Room 402 • Mrs. Wilson</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="time-slot">9:45 AM - 11:15 AM</td>
-                                    <td class="subject-slot physics">
-                                        <div class="subject-info">
-                                            <h4>Physics</h4>
-                                            <p>Room 205 • Ms. Thompson</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot history">
-                                        <div class="subject-info">
-                                            <h4>History</h4>
-                                            <p>Room 103 • Mr. Anderson</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot english">
-                                        <div class="subject-info">
-                                            <h4>English</h4>
-                                            <p>Room 102 • Mrs. Davis</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot mathematics">
-                                        <div class="subject-info">
-                                            <h4>Mathematics</h4>
-                                            <p>Room 301 • Mr. Johnson</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot physics">
-                                        <div class="subject-info">
-                                            <h4>Physics</h4>
-                                            <p>Room 205 • Ms. Thompson</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="time-slot">11:30 AM - 1:00 PM</td>
-                                    <td class="subject-slot english">
-                                        <div class="subject-info">
-                                            <h4>English</h4>
-                                            <p>Room 102 • Mrs. Davis</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot physics">
-                                        <div class="subject-info">
-                                            <h4>Physics</h4>
-                                            <p>Room 205 • Ms. Thompson</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot history">
-                                        <div class="subject-info">
-                                            <h4>History</h4>
-                                            <p>Room 103 • Mr. Anderson</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot biology">
-                                        <div class="subject-info">
-                                            <h4>Biology</h4>
-                                            <p>Room 401 • Dr. Miller</p>
-                                        </div>
-                                    </td>
-                                    <td class="subject-slot english">
-                                        <div class="subject-info">
-                                            <h4>English</h4>
-                                            <p>Room 102 • Mrs. Davis</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2>Class Schedule</h2>
+                    <div id="weeklySchedule">Loading schedule...</div>
                 </div>
             </div>
 
             <!-- Assignments Tab -->
-            <div id="assignments" class="tab-content">
-                <h2><i class="fas fa-tasks"></i> Assignments</h2>
-                <div class="cards-grid">
-                    <div class="card">
-                        <div class="assignment-header">
-                            <h3>Mathematics Assignment</h3>
-                            <span class="status warning">Due Tomorrow</span>
-                        </div>
-                        <p>Complete exercises 5-10 from Chapter 4: Quadratic Equations</p>
-                        <div class="card-actions">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-upload"></i> Submit Assignment
-                            </button>
-                            <button class="btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </button>
-                        </div>
+            <div class="tab-pane" id="assignments">
+                <div class="assignments-container">
+                    <h2>Assignments</h2>
+                    <div class="assignments-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="pending">Pending</button>
+                        <button class="filter-btn" data-filter="submitted">Submitted</button>
+                        <button class="filter-btn" data-filter="graded">Graded</button>
                     </div>
-                    <div class="card">
-                        <div class="assignment-header">
-                            <h3>Physics Lab Report</h3>
-                            <span class="status success">Submitted</span>
-                        </div>
-                        <p>Write a detailed report on the Light Refraction experiment</p>
-                        <div class="card-actions">
-                            <button class="btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Submission
-                            </button>
-                        </div>
-                    </div>
+                    <div id="assignmentsList">Loading assignments...</div>
                 </div>
             </div>
 
             <!-- Grades Tab -->
-            <div id="grades" class="tab-content">
-                <h2><i class="fas fa-chart-line"></i> Academic Performance</h2>
-                <div class="cards-grid">
-                    <div class="card">
-                        <h3>Mathematics</h3>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 92%"></div>
-                        </div>
-                        <p class="grade">92%</p>
-                        <span class="status success">Excellent</span>
-                    </div>
-                    <div class="card">
-                        <h3>Physics</h3>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 85%"></div>
-                        </div>
-                        <p class="grade">85%</p>
-                        <span class="status success">Good</span>
-                    </div>
+            <div class="tab-pane" id="grades">
+                <div class="grades-container">
+                    <h2>Grades Overview</h2>
+                    <div id="gradesOverview">Loading grades...</div>
                 </div>
             </div>
 
             <!-- Attendance Tab -->
-            <div id="attendance" class="tab-content">
-                <h2><i class="fas fa-user-check"></i> Attendance Record</h2>
-                <div class="card">
-                    <div class="attendance-summary">
-                        <div>
-                            <h3>Present</h3>
-                            <p>85 days</p>
-                        </div>
-                        <div>
-                            <h3>Absent</h3>
-                            <p>3 days</p>
-                        </div>
-                        <div>
-                            <h3>Late</h3>
-                            <p>2 days</p>
+            <div class="tab-pane" id="attendance">
+                <div class="attendance-container">
+                    <h2>Attendance Records</h2>
+                    <div class="attendance-filters">
+                        <div class="date-range">
+                            <input type="date" id="startDate" aria-label="Start Date">
+                            <span>to</span>
+                            <input type="date" id="endDate" aria-label="End Date">
+                            <button id="filterAttendance">
+                                <i class="fas fa-filter"></i>
+                                Filter
+                            </button>
                         </div>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 95%"></div>
+                    <div id="attendanceRecords" class="attendance-grid">
+                        <div class="loading-message">Loading attendance records...</div>
                     </div>
-                    <p class="attendance-rate">95% Attendance Rate</p>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 
-    <!-- Toast Container -->
-    <div id="toast-container"></div>
+    <!-- Assignment Submission Modal -->
+    <div id="assignmentModal">
+        <div class="modal-content" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2>Submit Assignment</h2>
+            </div>
+            <form id="submitForm" class="submit-form">
+                <div class="form-group">
+                    <label for="assignmentFile">Upload File</label>
+                    <div class="file-input-container" onclick="document.getElementById('assignmentFile').click();">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload or drag and drop your file here</p>
+                        <small>Accepted file types: PDF, DOC, DOCX, etc.</small>
+                    </div>
+                    <input type="file" id="assignmentFile" required>
+                    <div id="selectedFile">
+                        <span id="fileName"></span>
+                        <i class="fas fa-times" onclick="removeSelectedFile();"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Additional Notes (optional)</label>
+                    <textarea id="notes" rows="4" 
+                        placeholder="Add any notes or comments about your submission..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeSubmitModal();">Cancel</button>
+                    <button type="submit" class="btn-primary">Submit Assignment</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <!-- Scripts -->
-    <script src="js/student-ui.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/student-api.js"></script>
+    <script src="js/student.js"></script>
 </body>
 </html>

@@ -1,0 +1,20 @@
+[2025-05-03 23:56:49] Logging in as Mr. Roberts...
+[2025-05-03 23:56:52] Successfully logged in and got token
+[2025-05-03 23:56:52] 
+Getting dashboard stats...
+[2025-05-03 23:56:56] 
+Dashboard Stats:
+[2025-05-03 23:56:56] Total Students: 3
+[2025-05-03 23:56:56] Total Classes: 1
+[2025-05-03 23:56:56] Active Assignments: 0
+[2025-05-03 23:56:56] Average Attendance: 0%
+[2025-05-03 23:56:56] 
+Getting teacher's classes...
+[2025-05-03 23:56:58] 
+Classes:
+[2025-05-03 23:56:58] - Programming Fundamentals (ID: 4)
+[2025-05-03 23:56:58]   Current Students: 3
+[2025-05-03 23:57:00]   Enrolled Students:
+[2025-05-03 23:57:00]     - Alex Smith (ID: 1)
+[2025-05-03 23:57:00]     - Emma Jones (ID: 2)
+[2025-05-03 23:57:00]     - Ethan Thomas (ID: 7)

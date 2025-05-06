@@ -3,267 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Portal | School Management System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Teacher Dashboard - School Management System</title>
     <link rel="stylesheet" href="css/teacher.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/forms.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>👨‍🏫</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
+
 </head>
 <body>
+    <div class="app-container">
     <header>
         <div class="logo">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <span>TEACHER PORTAL</span>
-        </div>
-        <div class="user-profile">
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar"></div>
-                <span class="user-name" id="userName"></span>
+                <i class="fas fa-graduation-cap"></i>
+                <span>Teacher Dashboard</span>
             </div>
-            <button class="btn btn-secondary logout-btn" data-action="logout">
-                <i class="fas fa-sign-out-alt"></i>
-                Logout
-            </button>
-        </div>
+            <div class="user-profile">
+                <div class="user-avatar" id="userInitials"></div>
+                <span id="userName">Loading...</span>
+                <button class="logout-btn" onclick="window.teacherUI.handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
     </header>
 
-    <div class="container">
-        <div class="tabs-container">
-            <nav class="tabs-nav">
+        <div class="tabs">
                 <button class="tab-btn active" data-tab="dashboard">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                <i class="fas fa-home"></i>
+                Dashboard
                 </button>
                 <button class="tab-btn" data-tab="classes">
-                    <i class="fas fa-chalkboard"></i> My Classes
+                <i class="fas fa-chalkboard-teacher"></i>
+                My Classes
                 </button>
                 <button class="tab-btn" data-tab="assignments">
-                    <i class="fas fa-tasks"></i> Assignments
+                <i class="fas fa-tasks"></i>
+                Assignments
                 </button>
                 <button class="tab-btn" data-tab="attendance">
-                    <i class="fas fa-user-check"></i> Attendance
+                <i class="fas fa-user-check"></i>
+                Attendance
                 </button>
                 <button class="tab-btn" data-tab="grades">
-                    <i class="fas fa-star"></i> Grades
+                <i class="fas fa-star"></i>
+                Grades
                 </button>
                 <button class="tab-btn" data-tab="profile">
-                    <i class="fas fa-user"></i> Profile
+                <i class="fas fa-user"></i>
+                Profile
                 </button>
-            </nav>
+        </div>
 
-            <!-- Tab content sections -->
-            <div class="tab-content active" id="dashboard-section">
+        <div class="container">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content">
                 <div class="stats-grid">
                     <div class="stat-card">
+                        <i class="fas fa-users stat-icon"></i>
+                        <div class="stat-value" id="totalStudents">0</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chalkboard stat-icon"></i>
                         <div class="stat-value" id="totalClasses">0</div>
                         <div class="stat-label">Classes</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="totalStudents">0</div>
-                        <div class="stat-label">Students</div>
-                    </div>
-                    <div class="stat-card">
+                        <i class="fas fa-tasks stat-icon"></i>
                         <div class="stat-value" id="totalAssignments">0</div>
-                        <div class="stat-label">Assignments</div>
+                        <div class="stat-label">Active Assignments</div>
                     </div>
                     <div class="stat-card">
+                        <i class="fas fa-user-check stat-icon"></i>
                         <div class="stat-value" id="avgAttendance">0%</div>
-                        <div class="stat-label">Avg. Attendance</div>
+                        <div class="stat-label">Average Attendance</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-file-alt stat-icon"></i>
+                        <div class="stat-value" id="recentSubmissions">0</div>
+                        <div class="stat-label">Recent Submissions</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-star stat-icon"></i>
+                        <div class="stat-value" id="averageGrade">0</div>
+                        <div class="stat-label">Average Grade</div>
                     </div>
                 </div>
 
-                <div class="dashboard-grid">
-                    <div class="card upcoming-classes">
-                        <div class="card-header">
-                            <h2 class="card-title"><i class="fas fa-calendar"></i> Today's Classes</h2>
-                        </div>
-                        <div class="card-body">
-                            <ul id="todayClassesList" class="schedule-list">
-                                <li class="loading">Loading classes...</li>
-                            </ul>
-                        </div>
+                <div class="activities-section">
+                    <div class="activities-header">
+                        <i class="fas fa-bell bell-icon"></i>
+                        <h2>Recent Activities</h2>
                     </div>
-
-                    <div class="card pending-tasks">
-                        <div class="card-header">
-                            <h2 class="card-title"><i class="fas fa-clipboard-list"></i> Pending Tasks</h2>
-                        </div>
-                        <div class="card-body">
-                            <ul id="pendingTasksList" class="tasks-list">
-                                <li class="loading">Loading tasks...</li>
-                            </ul>
-                        </div>
+                    <div id="recentActivities">
+                        <!-- Activities will be loaded here -->
                     </div>
                 </div>
             </div>
 
-            <div class="tab-content" id="classes-section">
+            <!-- Classes Tab -->
+            <div id="classes" class="tab-content">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title"><i class="fas fa-chalkboard"></i> My Classes</h2>
-                        <button class="btn btn-primary" data-action="create-assignment">
-                            <i class="fas fa-plus"></i> Create Assignment
-                        </button>
+                        <h2 class="card-title">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            My Classes
+                        </h2>
                     </div>
-                    <div class="card-body">
                         <div class="table-container">
-                            <table class="table">
+                        <table class="table" id="classesTable">
                                 <thead>
                                     <tr>
                                         <th>Class Name</th>
                                         <th>Grade</th>
+                                    <th>Section</th>
                                         <th>Students</th>
                                         <th>Schedule</th>
+                                    <th>Room</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="classesTableBody">
-                                    <tr>
-                                        <td colspan="5" class="loading">Loading classes...</td>
-                                    </tr>
+                                <!-- Classes will be loaded here -->
                                 </tbody>
                             </table>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="tab-content" id="assignments-section">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title"><i class="fas fa-tasks"></i> Assignments</h2>
-                        <button class="btn btn-primary" data-action="create-assignment">
-                            <i class="fas fa-plus"></i> New Assignment
+            <!-- Assignments Tab -->
+            <div id="assignments" class="tab-content">
+                <div class="assignments-header">
+                    <div class="assignments-title">
+                        <i class="fas fa-tasks"></i>
+                        <h2>Assignments</h2>
+                    </div>
+                    <button class="btn btn-primary create-assignment-btn" onclick="window.teacherUI.createAssignment()">
+                        <i class="fas fa-plus"></i>
+                        Create Assignment
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="table modern-table" id="assignmentsTable">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Class</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Submissions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assignmentsTableBody">
+                        <!-- Assignments will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Attendance Tab -->
+            <div id="attendance" class="tab-content">
+                <div class="attendance-header">
+                    <div class="attendance-title">
+                        <i class="fas fa-user-check"></i>
+                        <h2>Attendance</h2>
+                    </div>
+                    
+                    <div class="attendance-controls">
+                        <div class="attendance-selectors">
+                            <select id="attendanceClass" class="form-control modern-select">
+                                <option value="">Select Class</option>
+                            </select>
+                            <input type="date" id="attendanceDate" class="form-control modern-date">
+                            <button class="btn btn-primary select-class-btn">Select Class</button>
+                        </div>
+                        
+                        <div class="attendance-actions">
+                            <button class="btn btn-success mark-all-btn" onclick="window.teacherUI.markAllPresent()">
+                                <i class="fas fa-check-double"></i>
+                                Mark All Present
+                            </button>
+                            <button class="btn btn-primary export-btn" onclick="window.teacherUI.exportAttendance()">
+                                <i class="fas fa-file-export"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="attendance-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="presentCount">0</div>
+                        <div class="stat-label">Present</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="absentCount">0</div>
+                        <div class="stat-label">Absent</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="lateCount">0</div>
+                        <div class="stat-label">Late</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="attendanceRate">0%</div>
+                        <div class="stat-label">Attendance Rate</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="table modern-table" id="attendanceTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAllStudents" class="modern-checkbox" onchange="window.teacherUI.toggleAllStudents(this.checked)">
+                                </th>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                        <!-- Attendance records will be loaded here -->
+                        </tbody>
+                    </table>
+                    <div class="bulk-actions" id="attendanceBulkActions" style="display: none;">
+                        <select class="form-control modern-select" id="bulkStatusSelect">
+                            <option value="">Select Status</option>
+                            <option value="present">Present</option>
+                            <option value="absent">Absent</option>
+                            <option value="late">Late</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="window.teacherUI.applyBulkStatus()">
+                            Apply to Selected
                         </button>
                     </div>
-                    <div class="card-body">
-                        <div class="table-container">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Class</th>
-                                        <th>Due Date</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="assignmentsTableBody">
-                                    <tr>
-                                        <td colspan="5" class="loading">Loading assignments...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <div class="tab-content" id="attendance-section">
+            <!-- Grades Tab -->
+            <div id="grades" class="tab-content">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title"><i class="fas fa-user-check"></i> Attendance</h2>
-                        <div class="header-actions">
-                            <select id="attendanceClass" class="form-select">
+                        <h2 class="card-title">
+                            <i class="fas fa-star"></i>
+                            Grades
+                        </h2>
+                        <div class="grade-filters">
+                            <select id="gradesClass" class="form-control">
                                 <option value="">Select Class</option>
                             </select>
-                            <input type="date" id="attendanceDate" class="form-input" value="">
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-container">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Student Name</th>
-                                        <th>Status</th>
-                                        <th>Notes</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="attendanceTableBody">
-                                    <tr>
-                                        <td colspan="4" class="loading">Select a class and date to view attendance</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-content" id="grades-section">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title"><i class="fas fa-star"></i> Grades</h2>
-                        <div class="header-actions">
-                            <select id="gradesClass" class="form-select">
-                                <option value="">Select Class</option>
-                            </select>
-                            <select id="gradesAssignment" class="form-select">
+                            <select id="gradesAssignment" class="form-control">
                                 <option value="">Select Assignment</option>
                             </select>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-container">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Student Name</th>
-                                        <th>Grade</th>
-                                        <th>Submission Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="gradesTableBody">
-                                    <tr>
-                                        <td colspan="4" class="loading">Select a class and assignment to view grades</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    
+                    <!-- Add grade statistics section -->
+                    <div class="grade-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="averageGrade">-</div>
+                            <div class="stat-label">Average Grade</div>
                         </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="submittedCount">-</div>
+                            <div class="stat-label">Submitted</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="pendingCount">-</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="highestGrade">-</div>
+                            <div class="stat-label">Highest Grade</div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="table modern-table" id="gradesTable">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Grade</th>
+                                    <th>Status</th>
+                                    <th>Submission Date</th>
+                                    <th>Grade Input</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTableBody">
+                            <!-- Grades will be loaded here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <div class="tab-content" id="profile-section">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title"><i class="fas fa-user"></i> My Profile</h2>
-                        <button class="btn btn-primary" data-action="edit-profile">
-                            <i class="fas fa-edit"></i> Edit Profile
-                        </button>
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profileInitials"></div>
+                        <div class="profile-title">
+                            <h2>Teacher Profile</h2>
+                            <button class="btn btn-primary edit-profile-btn" onclick="teacherUI.editProfile()">
+                                <i class="fas fa-edit"></i>
+                                Edit Profile
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="profile-grid">
-                            <div class="profile-avatar">
-                                <div class="user-avatar large" id="profileAvatar">TC</div>
-                                <h2 id="profileName">Loading...</h2>
-                                <p id="profileSubject">Subject: Loading...</p>
-                            </div>
-                            <div class="profile-info">
-                                <div class="info-group">
-                                    <label>Email:</label>
-                                    <span id="profileEmail">Loading...</span>
-                                </div>
-                                <div class="info-group">
-                                    <label>Phone:</label>
-                                    <span id="profilePhone">Loading...</span>
-                                </div>
-                                <div class="info-group">
-                                    <label>Department:</label>
-                                    <span id="profileDepartment">Loading...</span>
-                                </div>
-                                <div class="info-group">
-                                    <label>Join Date:</label>
-                                    <span id="profileJoinDate">Loading...</span>
-                                </div>
-                            </div>
+                    
+                    <div class="profile-info">
+                        <div class="info-group">
+                            <label>Full Name</label>
+                            <p id="profileName">Loading...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Email</label>
+                            <p id="profileEmail">Loading...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Subject</label>
+                            <p id="profileSubject">Loading...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Contact</label>
+                            <p id="profileContact">Loading...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Qualification</label>
+                            <p id="profileQualification">Loading...</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Bio</label>
+                            <p id="profileBio">Loading...</p>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label for="editFullName">Full Name</label>
+                        <input type="text" id="editFullName" class="form-control" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" id="editEmail" class="form-control" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="editSubject">Subject</label>
+                        <input type="text" id="editSubject" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="editContact">Contact</label>
+                        <input type="text" id="editContact" class="form-control" autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="editQualification">Qualification</label>
+                        <input type="text" id="editQualification" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="editBio">Bio</label>
+                        <textarea id="editBio" class="form-control" rows="4" autocomplete="off"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassword">New Password (leave blank to keep current)</label>
+                        <input type="password" id="editPassword" class="form-control" autocomplete="new-password">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="teacherUI.closeModal('editProfileModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="teacherUI.saveProfile()">Save Changes</button>
             </div>
         </div>
     </div>
@@ -272,44 +395,297 @@
     <div id="createAssignmentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Create New Assignment</h2>
-                <span class="close-modal" onclick="closeModal('createAssignmentModal')">&times;</span>
+                <h2>Create Assignment</h2>
+                <span class="close-modal" onclick="window.teacherUI.closeModal('createAssignmentModal')">&times;</span>
             </div>
-            <form id="createAssignmentForm">
-                <div class="form-row">
+            <div class="modal-body">
+                <form id="createAssignmentForm">
                     <div class="form-group">
                         <label for="assignmentTitle">Title</label>
-                        <input type="text" id="assignmentTitle" required>
+                        <input type="text" id="assignmentTitle" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="assignmentClass">Class</label>
-                        <select id="assignmentClass" required>
+                        <select id="assignmentClass" class="form-control" required>
                             <option value="">Select Class</option>
                         </select>
                     </div>
-                </div>
-                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assignmentDescription">Description</label>
+                        <textarea id="assignmentDescription" class="form-control" rows="3" required></textarea>
+                    </div>
                     <div class="form-group">
                         <label for="assignmentDueDate">Due Date</label>
-                        <input type="date" id="assignmentDueDate" required>
+                        <input type="datetime-local" id="assignmentDueDate" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="assignmentPoints">Total Points</label>
-                        <input type="number" id="assignmentPoints" min="0" required>
+                        <label for="assignmentMaxScore">Maximum Score</label>
+                        <input type="number" id="assignmentMaxScore" class="form-control" min="0" value="100" required>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="assignmentDescription">Description</label>
-                    <textarea id="assignmentDescription" rows="4" required></textarea>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeModal('createAssignmentModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Assignment</button>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.teacherUI.closeModal('createAssignmentModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="window.teacherUI.saveAssignment()">Create Assignment</button>
+            </div>
         </div>
     </div>
 
-    <script src="js/teacher.js"></script>
+    <!-- View Assignment Modal -->
+    <div id="viewAssignmentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Assignment Details</h2>
+                <span class="close-modal" onclick="teacherUI.closeModal('viewAssignmentModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="assignment-info">
+                    <h3 id="viewAssignmentTitle"></h3>
+                    <p id="viewAssignmentClass"></p>
+                    <p>Due: <span id="viewAssignmentDueDate"></span></p>
+                    <p>Status: <span id="viewAssignmentStatus"></span></p>
+                    <p>Submissions: <span id="viewAssignmentSubmissions"></span></p>
+                </div>
+                <div class="assignment-description">
+                    <h4>Description</h4>
+                    <p id="viewAssignmentDescription"></p>
+                </div>
+                <div class="submissions-list">
+                    <h4>Submissions</h4>
+                    <div id="viewAssignmentSubmissionsList">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="teacherUI.closeModal('viewAssignmentModal')">Close</button>
+                <button class="btn btn-primary" onclick="teacherUI.editAssignment(document.getElementById('viewAssignmentModal').dataset.assignmentId)">Edit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Assignment Modal -->
+    <div id="editAssignmentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Assignment</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editAssignmentForm">
+                    <input type="hidden" id="editAssignmentId">
+                    <div class="form-group">
+                        <label for="editAssignmentTitle">Title</label>
+                        <input type="text" id="editAssignmentTitle" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAssignmentClass">Class</label>
+                        <select id="editAssignmentClass" class="form-control" required>
+                            <option value="">Select Class</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAssignmentDescription">Description</label>
+                        <textarea id="editAssignmentDescription" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAssignmentDueDate">Due Date</label>
+                        <input type="datetime-local" id="editAssignmentDueDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAssignmentMaxScore">Maximum Score</label>
+                        <input type="number" id="editAssignmentMaxScore" class="form-control" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAssignmentStatus">Status</label>
+                        <select id="editAssignmentStatus" class="form-control" required>
+                            <option value="Active">Active</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Archived">Archived</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="teacherUI.closeModal('editAssignmentModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="teacherUI.saveEditedAssignment()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Class Modal -->
+    <div id="viewClassModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Class Details</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="class-details">
+                    <h3 id="viewClassName"></h3>
+                    <div class="class-meta">
+                        <p><strong>Grade:</strong> <span id="viewClassGrade"></span></p>
+                        <p><strong>Section:</strong> <span id="viewClassSection"></span></p>
+                        <p><strong>Room:</strong> <span id="viewClassRoom"></span></p>
+                        <p><strong>Schedule:</strong> <span id="viewClassSchedule"></span></p>
+                        <p><strong>Students:</strong> <span id="viewClassStudents"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="teacherUI.closeModal('viewClassModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance History Modal -->
+    <div id="viewAttendanceHistoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Attendance History</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="student-info">
+                    <h3 id="attendanceHistoryStudentName">Student Name</h3>
+                </div>
+                <div class="attendance-history-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="historyPresentCount">0</div>
+                        <div class="stat-label">Present</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="historyAbsentCount">0</div>
+                        <div class="stat-label">Absent</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="historyLateCount">0</div>
+                        <div class="stat-label">Late</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="historyAttendanceRate">0%</div>
+                        <div class="stat-label">Attendance Rate</div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="table" id="attendanceHistoryTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceHistoryTableBody">
+                            <!-- Attendance history will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Submission Modal -->
+    <div id="viewSubmissionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>View Submission</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Student:</label>
+                    <span id="submissionStudentName"></span>
+                </div>
+                <div class="form-group">
+                    <label>Submitted:</label>
+                    <span id="submissionDate"></span>
+                </div>
+                <div class="form-group">
+                    <label>Status:</label>
+                    <span id="submissionStatus"></span>
+                </div>
+                    <div class="form-group">
+                    <label>File:</label>
+                    <a id="submissionFileLink" href="#" target="_blank"></a>
+                    </div>
+                    <div class="form-group">
+                    <label for="submissionScore">Score:</label>
+                    <input type="number" id="submissionScore" class="form-control" min="0" max="100">
+                    </div>
+                <div class="form-group">
+                    <label for="submissionFeedback">Feedback:</label>
+                    <textarea id="submissionFeedback" class="form-control" rows="4"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.teacherUI.closeModal('viewSubmissionModal')">Close</button>
+                <button class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Comment Modal -->
+    <div id="addCommentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Comment</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addCommentForm">
+                    <div class="form-group">
+                        <label for="gradeComment">Comment</label>
+                        <textarea id="gradeComment" class="form-control" rows="4" required></textarea>
+                </div>
+            </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary">Cancel</button>
+                <button class="btn btn-primary" onclick="teacherUI.saveComment()">Add Comment</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/teacher-api.js"></script>
+    <script src="js/teacher-ui.js"></script>
+    <script>
+        // Global notification function
+        window.showNotification = function(title, message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${getNotificationIcon(type)}"></i>
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+            
+            function getNotificationIcon(type) {
+                const icons = {
+                    'success': 'check-circle',
+                    'error': 'exclamation-circle',
+                    'warning': 'exclamation-triangle',
+                    'info': 'info-circle'
+                };
+                return icons[type] || icons.info;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize TeacherUI only once
+            window.teacherUI = new TeacherUI();
+        });
+    </script>
 </body>
 </html>

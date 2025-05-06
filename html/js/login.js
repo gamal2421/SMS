@@ -1,36 +1,5 @@
-// Mock user accounts
-const users = {
-    'admin@school.com': {
-        password: 'admin123',
-        role: 'admin',
-        firstName: 'Admin',
-        lastName: 'User',
-        redirectUrl: 'admin.html'
-    },
-    'teacher@school.com': {
-        password: 'teacher123',
-        role: 'teacher',
-        firstName: 'Jane',
-        lastName: 'Doe',
-        redirectUrl: 'teacher.html'
-    },
-    'student@school.com': {
-        password: 'student123',
-        role: 'student',
-        firstName: 'John',
-        lastName: 'Smith',
-        grade: '10-A',
-        redirectUrl: 'student.html'
-    },
-    'parent@school.com': {
-        password: 'parent123',
-        role: 'parent',
-        firstName: 'David',
-        lastName: 'Wilson',
-        children: ['Mike Wilson'],
-        redirectUrl: 'parent.html'
-    }
-};
+// API Configuration
+const API_URL = 'http://localhost:8000';
 
 // Check for remembered credentials on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -41,11 +10,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('password').value = password;
         document.getElementById('rememberMe').checked = true;
     }
+
+    // If there's a valid token, redirect to appropriate page
+    const token = localStorage.getItem('token');
+    if (token) {
+        const userRole = localStorage.getItem('userRole');
+        redirectToUserDashboard(userRole);
+    }
 });
 
-// Login form submission handler
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Handle login form submission
+async function handleLogin(event) {
+    event.preventDefault();
     
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -54,44 +30,82 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     
     // Reset error message
     errorMessage.textContent = '';
+    errorMessage.style.display = 'none';
     
-    // Check if user exists
-    if (users[email]) {
-        // Check password
-        if (users[email].password === password) {
-            // Handle Remember Me
-            if (rememberMe) {
-                localStorage.setItem('rememberedUser', JSON.stringify({ email, password }));
-            } else {
-                localStorage.removeItem('rememberedUser');
-            }
+    try {
+        console.log('Attempting login with:', { email });
+        
+        const response = await fetch(`${API_URL}/auth/token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json'
+            },
+            mode: 'cors',
+            credentials: 'omit', // Changed to 'omit' to avoid CORS issues
+            body: new URLSearchParams({
+                'username': email,
+                'password': password
+            })
+        });
 
-            // Store user info in session storage
-            const userInfo = { ...users[email] };
-            delete userInfo.password; // Don't store password
-            sessionStorage.setItem('currentUser', JSON.stringify(userInfo));
-            
-            // Show success message
-            showToast('Login successful! Redirecting...', 'success');
-            
-            // Redirect to appropriate dashboard
-            setTimeout(() => {
-                window.location.href = users[email].redirectUrl;
-            }, 1500);
-        } else {
-            errorMessage.textContent = 'Invalid password';
-            showToast('Invalid password', 'error');
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        if (!response.ok) {
+            throw new Error(data.detail || 'Login failed. Please check your credentials.');
         }
-    } else {
-        errorMessage.textContent = 'User not found';
-        showToast('User not found', 'error');
-    }
-});
+        
+        // Store token and user info
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem('token', data.access_token);
+        storage.setItem('userRole', data.user_role || data.role);
+        storage.setItem('userEmail', email);
 
-// Show password toggle
-document.getElementById('showPassword').addEventListener('click', function() {
+        if (rememberMe) {
+            localStorage.setItem('rememberedUser', JSON.stringify({ email, password }));
+        } else {
+            localStorage.removeItem('rememberedUser');
+        }
+
+        // Show success message
+        showToast('Login successful! Redirecting...', 'success');
+
+        // Redirect based on role
+        setTimeout(() => {
+            redirectToUserDashboard(data.user_role || data.role);
+        }, 1000);
+
+    } catch (error) {
+        console.error('Login error:', error);
+        showToast(error.message || 'Login failed. Please try again.', 'error');
+        errorMessage.textContent = error.message || 'Login failed. Please try again.';
+        errorMessage.style.display = 'block';
+    }
+}
+
+// Redirect user based on role
+function redirectToUserDashboard(role) {
+    const roleRedirects = {
+        'admin': '/html/admin.html',
+        'teacher': '/html/teacher.html',
+        'student': '/html/student.html',
+        'parent': '/html/parent.html'
+    };
+
+    const redirectUrl = roleRedirects[role];
+    if (redirectUrl) {
+        window.location.href = redirectUrl;
+    } else {
+        showToast('Unknown user role. Please contact support.', 'error');
+    }
+}
+
+// Toggle password visibility
+function togglePassword() {
     const passwordInput = document.getElementById('password');
-    const icon = this.querySelector('i');
+    const icon = document.querySelector('.password-toggle');
     
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
@@ -102,7 +116,7 @@ document.getElementById('showPassword').addEventListener('click', function() {
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
     }
-});
+}
 
 // Toast notification function
 function showToast(message, type = 'info') {

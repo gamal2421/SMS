@@ -4,209 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - School Management System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/admin.css">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-        }
-
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-header h1 {
-            color: var(--primary-color);
-            margin: 0;
-            font-size: 2em;
-            font-weight: 600;
-        }
-
-        .login-header p {
-            color: var(--text-muted);
-            margin: 10px 0 0;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #eee;
-            border-radius: 10px;
-            font-size: 1em;
-            transition: all 0.3s;
-            outline: none;
-        }
-
-        .form-group input:focus {
-            border-color: var(--primary-color);
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--text-muted);
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .submit-btn:hover {
-            background: var(--secondary-color);
-        }
-
-        .error-message {
-            color: var(--error-color);
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9em;
-        }
-
-        .sample-accounts {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-
-        .sample-accounts h3 {
-            color: var(--text-muted);
-            font-size: 0.9em;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .account-list {
-            font-size: 0.8em;
-            color: var(--text-muted);
-        }
-
-        .account-list div {
-            margin-bottom: 8px;
-        }
-
-        .account-list strong {
-            color: var(--primary-color);
-        }
-
-        /* Toast Styles */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            border-radius: 8px;
-            color: white;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .toast.success {
-            background: #4CAF50;
-        }
-
-        .toast.error {
-            background: #f44336;
-        }
-
-        .toast.info {
-            background: var(--primary-color);
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-size: 0.9em;
-        }
-
-        .checkbox-label input[type="checkbox"] {
-            display: none;
-        }
-
-        .checkbox-custom {
-            width: 18px;
-            height: 18px;
-            border: 2px solid #eee;
-            border-radius: 4px;
-            margin-right: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .checkbox-custom::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: white;
-            font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
-            opacity: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
     <div class="login-container">
@@ -215,40 +16,40 @@
                 <h1>Welcome Back</h1>
                 <p>Please login to your account</p>
             </div>
-            <form id="loginForm">
+            <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
                 <div class="form-group">
-                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="email" id="email" name="email" placeholder="Email" required
+                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                           title="Please enter a valid email address">
+                    <div class="error-hint"></div>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="password" placeholder="Password" required>
-                    <span class="password-toggle" id="showPassword">
-                        <i class="fas fa-eye"></i>
-                    </span>
+                    <input type="password" id="password" name="password" placeholder="Password" required
+                           minlength="6"
+                           title="Password must be at least 6 characters long">
+                    <i class="password-toggle fas fa-eye" onclick="togglePassword()"></i>
+                    <div class="error-hint"></div>
                 </div>
-                <div class="form-group remember-me">
+                <div class="remember-me">
                     <label class="checkbox-label">
-                        <input type="checkbox" id="rememberMe">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
                         <span class="checkbox-custom"></span>
-                        Remember Me
+                        Remember me
                     </label>
                 </div>
-                <button type="submit" class="submit-btn">Login</button>
-                <div class="error-message" id="errorMessage"></div>
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Login</span>
+                    <span class="btn-loader" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </span>
+                </button>
+                <div id="errorMessage" class="error-message" role="alert" aria-live="polite"></div>
             </form>
 
-            <!-- Sample Accounts Section -->
-            <div class="sample-accounts">
-                <h3>Sample Accounts for Testing</h3>
-                <div class="account-list">
-                    <div><strong>Admin:</strong> admin@school.com / admin123</div>
-                    <div><strong>Teacher:</strong> teacher@school.com / teacher123</div>
-                    <div><strong>Student:</strong> student@school.com / student123</div>
-                    <div><strong>Parent:</strong> parent@school.com / parent123</div>
-                </div>
-            </div>
         </div>
     </div>
 
+    <script src="js/config.js"></script>
     <script src="js/login.js"></script>
 </body>
 </html>

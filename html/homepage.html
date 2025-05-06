@@ -31,7 +31,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content animate-hero">
-            <h1 class="hero-title">Welcome to NTG School Management System</h1>
+            <h1 class="hero-title">Welcome to NTG School </h1>
             <p class="hero-subtitle">The future starts here!</p>
             <div class="hero-buttons">
                 <a href="login.html" class="hb btn btn-primary">Login</a>
@@ -46,15 +46,36 @@
         <h2 class="section-title">About NTG School</h2>
         <div class="about-mission-vision">
             <div class="about-mission fade-in">
-                <h3>Our Mission</h3>
+               <div class="text">
+                <h2>Our Mission</h2>
+               </div>
+               <div class="p">
                 <p>To empower schools with innovative digital tools that streamline operations, foster communication, and inspire lifelong learning for every student.</p>
             </div>
+            </div>
             <div class="about-vision fade-in">
-                <h3>Our Vision</h3>
+                <div class="text">
+                <h2> Our Vision</h2>
+            </div>
+            <div class="p">
+
+           
                 <p>To be the leading platform for modern education, connecting students, teachers, and parents in a seamless, secure, and engaging environment.</p>
             </div>
+            </div>
         </div>
-        <p class="about-text fade-in">NTG School Management System is a modern, secure, and user-friendly platform designed to streamline school operations, enhance communication, and empower students, teachers, and parents. Our mission is to provide a seamless digital experience for all stakeholders in the education ecosystem.</p>
+
+    </section>
+
+    <section>
+        
+        <div class="slider">
+            <img id="slideImage" src="1.jpeg" alt="Image" />
+            <div class="navigation">
+                <button class="prev" onclick="changeSlide(-1)">❮ </button>
+                <button class="next" onclick="changeSlide(1)"> ❯</button>
+            </div>
+        </div>
     </section>
 
     <!-- How It Works Section -->
@@ -101,7 +122,7 @@
 
     <!-- Testimonials Section -->
     <section class="testimonials">
-        <h2 class="section-title">What Our Users Say</h2>
+        <h2 class="section-title">What Our Users Say..</h2>
         <div class="testimonials-grid">
             <div class="testimonial-card fade-in">
                 <div class="testimonial-quote">“NTG School has made managing classes and grades so much easier. The interface is beautiful and intuitive!”</div>
@@ -198,54 +219,6 @@
         </form>
     </section>
 </div>
-
-<script>
-// Fade-in animation for feature cards
-window.addEventListener('DOMContentLoaded', () => {
-  const cards = document.querySelectorAll('.feature-card.fade-in');
-  cards.forEach((card, i) => {
-    setTimeout(() => card.classList.add('visible'), 200 + i * 150);
-  });
-  // Animate hero
-  document.querySelectorAll('.animate-hero').forEach(el => {
-    setTimeout(() => el.classList.add('visible'), 100);
-  });
-  document.querySelectorAll('.animate-hero-img').forEach(el => {
-    setTimeout(() => el.classList.add('visible'), 400);
-  });
-  // Animate fade-in and slide-in elements on scroll
-  const fadeEls = document.querySelectorAll('.fade-in, .slide-in');
-  const onScroll = () => {
-    fadeEls.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight - 60) {
-        el.classList.add('visible');
-      }
-    });
-  };
-  window.addEventListener('scroll', onScroll);
-  onScroll();
-  // FAQ toggle
-  document.querySelectorAll('.faq-question').forEach(q => {
-    q.addEventListener('click', function() {
-      this.classList.toggle('open');
-      const answer = this.nextElementSibling;
-      answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
-    });
-  });
-});
-
-// Enable smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    const targetId = this.getAttribute('href').slice(1);
-    const target = document.getElementById(targetId);
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
-});
-</script>
+<script src="js/home.js"></script>
 </body>
 </html>
