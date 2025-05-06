@@ -363,14 +363,20 @@ const AdminUI = {
     async deleteClass(classId) {
         if (!confirm('Are you sure you want to delete this class?')) return;
 
-        const result = AdminSystem.deleteClass(classId);
-        
-        if (result.success) {
+        try {
+            const result = AdminSystem.deleteClass(classId);
             this.showNotification('Class deleted successfully', 'success');
             this.renderClasses();
             this.updateDashboardStats();
-        } else {
-            this.showNotification(result.error || 'Failed to delete class', 'error');
+        } catch (error) {
+            if (error.code === 'CLASS_HAS_STUDENTS') {
+                this.showNotification(
+                    `Cannot delete ${error.details.className} - ${error.details.enrolledStudents} student(s) are still enrolled. Please transfer or remove the students first.`,
+                    'error'
+                );
+            } else {
+                this.showNotification(error.message || 'Failed to delete class', 'error');
+            }
         }
     },
 
@@ -608,6 +614,7 @@ const AdminUI = {
         const teacher = AdminSystem.getTeachers().find(t => t.id === id);
         if (!teacher) return;
 
+        const assignments = AssignmentSystem.getAssignmentsByTeacher(id);
         const detailsHTML = `
             <div class="modal-content">
                 <div class="modal-header">
@@ -637,19 +644,35 @@ const AdminUI = {
                                 <ul class="classes-list">
                                     ${teacher.assignedClasses.map(cls => `
                                         <li class="class-item">${cls}</li>
-                `).join('')}
+                                    `).join('')}
                                 </ul>
                             ` : '<p>No classes assigned</p>'}
+                        </div>
+                        <div class="teacher-assignments">
+                            <h4>Assignments Overview</h4>
+                            <div class="assignment-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">${assignments.length}</span>
+                                    <span class="stat-label">Total Assignments</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">${assignments.filter(a => a.submissions.some(s => s.status === 'submitted')).length}</span>
+                                    <span class="stat-label">Pending Review</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">${assignments.filter(a => a.submissions.some(s => s.status === 'graded')).length}</span>
+                                    <span class="stat-label">Graded</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="AdminUI.viewTeacherAssignments(${teacher.id})">
+                                <i class="fas fa-tasks"></i> Manage Assignments
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-            </div>
-                <div class="modal-footer">
-                    <button class="btn cancel-btn">Close</button>
-            </div>
-        </div>
-    `;
+        `;
 
-        // Create modal element if it doesn't exist
         let modal = document.getElementById('teacherDetailsModal');
         if (!modal) {
             modal = document.createElement('div');
@@ -662,16 +685,265 @@ const AdminUI = {
         this.showModal('teacherDetailsModal');
     },
 
-    deleteTeacher(id) {
-        if (!confirm('Are you sure you want to delete this teacher?')) return;
+    viewTeacherAssignments(teacherId) {
+        this.hideModal('teacherDetailsModal');
+        const teacher = AdminSystem.getTeachers().find(t => t.id === teacherId);
+        if (!teacher) return;
 
-        const result = AdminSystem.deleteTeacher(id);
-        if (result.success) {
-            this.showNotification('Teacher deleted successfully', 'success');
-            this.renderTeachers();
-            this.updateDashboardStats();
-        } else {
-            this.showNotification(result.error || 'Failed to delete teacher', 'error');
+        this.currentTeacherId = teacherId;
+        this.showModal('teacherAssignmentsModal');
+        this.switchAssignmentTab('active');
+    },
+
+    switchAssignmentTab(tab) {
+        // Update tab buttons
+        document.querySelectorAll('.assignments-tabs .tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`.assignments-tabs .tab-btn[onclick*="${tab}"]`).classList.add('active');
+
+        // Update tab content
+        document.querySelectorAll('.assignment-tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`${tab}Assignments`).classList.add('active');
+
+        // Load content based on tab
+        const assignments = AssignmentSystem.getAssignmentsByTeacher(this.currentTeacherId);
+        switch(tab) {
+            case 'active':
+                this.renderActiveAssignments(assignments);
+                break;
+            case 'submitted':
+                this.renderSubmittedAssignments(assignments);
+                break;
+            case 'graded':
+                this.renderGradedAssignments(assignments);
+                break;
+        }
+    },
+
+    renderActiveAssignments(assignments) {
+        const activeAssignments = assignments.filter(a => a.status === 'active');
+        const container = document.getElementById('activeAssignmentsList');
+        
+        if (activeAssignments.length === 0) {
+            container.innerHTML = '<p class="no-data">No active assignments</p>';
+            return;
+        }
+
+        container.innerHTML = activeAssignments.map(assignment => `
+            <div class="assignment-card">
+                <div class="assignment-header">
+                    <h3 class="assignment-title">${assignment.title}</h3>
+                    <div class="assignment-meta">
+                        <span class="due-date">Due: ${new Date(assignment.dueDate).toLocaleDateString()}</span>
+                        <span class="submissions-count">
+                            <i class="fas fa-file-alt"></i> ${assignment.submissions.length} submissions
+                        </span>
+                    </div>
+                </div>
+                <div class="assignment-description">
+                    ${assignment.description}
+                </div>
+                <div class="assignment-files">
+                    <h4>Attached Files:</h4>
+                    <div class="file-list">
+                        ${assignment.attachments.map(file => `
+                            <div class="file-item">
+                                <i class="fas fa-file"></i>
+                                ${file}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    renderSubmittedAssignments(assignments) {
+        const submittedAssignments = assignments.flatMap(assignment => 
+            assignment.submissions
+                .filter(sub => sub.status === 'submitted')
+                .map(sub => ({...sub, assignmentTitle: assignment.title, assignmentId: assignment.id}))
+        );
+
+        const container = document.getElementById('submittedAssignmentsList');
+        
+        if (submittedAssignments.length === 0) {
+            container.innerHTML = '<p class="no-data">No submissions pending review</p>';
+            return;
+        }
+
+        container.innerHTML = submittedAssignments.map(submission => `
+            <div class="submission-card">
+                <div class="submission-header">
+                    <div class="submission-info">
+                        <h3 class="submission-title">${submission.assignmentTitle}</h3>
+                        <p class="student-name">
+                            <i class="fas fa-user-graduate"></i>
+                            ${this.getStudentName(submission.studentId)}
+                        </p>
+                    </div>
+                    <div class="submission-meta">
+                        <span class="submission-date">
+                            Submitted: ${new Date(submission.submissionDate).toLocaleString()}
+                        </span>
+                    </div>
+                </div>
+                <div class="submission-files">
+                    ${submission.files.map(file => `
+                        <div class="file-item">
+                            <i class="fas fa-file"></i>
+                            ${file}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="submission-actions">
+                    <button class="btn btn-primary" onclick="AdminUI.viewSubmissionDetails(${submission.assignmentId}, ${submission.id})">
+                        Grade Submission
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    renderGradedAssignments(assignments) {
+        const gradedAssignments = assignments.flatMap(assignment => 
+            assignment.submissions
+                .filter(sub => sub.status === 'graded')
+                .map(sub => ({...sub, assignmentTitle: assignment.title, assignmentId: assignment.id}))
+        );
+
+        const container = document.getElementById('gradedAssignmentsList');
+        
+        if (gradedAssignments.length === 0) {
+            container.innerHTML = '<p class="no-data">No graded submissions</p>';
+            return;
+        }
+
+        container.innerHTML = gradedAssignments.map(submission => `
+            <div class="submission-card">
+                <div class="submission-header">
+                    <div class="submission-info">
+                        <h3 class="submission-title">${submission.assignmentTitle}</h3>
+                        <p class="student-name">
+                            <i class="fas fa-user-graduate"></i>
+                            ${this.getStudentName(submission.studentId)}
+                        </p>
+                    </div>
+                    <div class="grade-info">
+                        <span class="grade">Grade: ${submission.grade}/100</span>
+                    </div>
+                </div>
+                <div class="feedback-section">
+                    <h4>Feedback:</h4>
+                    <p>${submission.feedback}</p>
+                </div>
+                <div class="submission-files">
+                    ${submission.files.map(file => `
+                        <div class="file-item">
+                            <i class="fas fa-file"></i>
+                            ${file}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="grading-meta">
+                    <span class="graded-date">
+                        Graded on: ${new Date(submission.gradedAt).toLocaleString()}
+                    </span>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    viewSubmissionDetails(assignmentId, submissionId) {
+        const assignment = AssignmentSystem.data.assignments.find(a => a.id === assignmentId);
+        const submission = assignment?.submissions.find(s => s.id === submissionId);
+        if (!assignment || !submission) return;
+
+        const student = AdminSystem.getStudents().find(s => s.id === submission.studentId);
+        
+        const detailsHTML = `
+            <div class="submission-overview">
+                <h3>${assignment.title}</h3>
+                <div class="submission-meta">
+                    <p><strong>Student:</strong> ${student.firstName} ${student.lastName}</p>
+                    <p><strong>Submitted:</strong> ${new Date(submission.submissionDate).toLocaleString()}</p>
+                </div>
+                <div class="submission-files">
+                    <h4>Submitted Files:</h4>
+                    ${submission.files.map(file => `
+                        <div class="file-item">
+                            <i class="fas fa-file"></i>
+                            ${file}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        document.getElementById('submissionDetailsContent').innerHTML = detailsHTML;
+        document.getElementById('grade').value = submission.grade || '';
+        document.getElementById('feedback').value = submission.feedback || '';
+
+        // Store current submission info for grading
+        this.currentSubmission = { assignmentId, submissionId };
+        this.showModal('submissionDetailsModal');
+    },
+
+    submitGrade() {
+        if (!this.currentSubmission) return;
+
+        const grade = parseInt(document.getElementById('grade').value);
+        const feedback = document.getElementById('feedback').value;
+
+        if (!grade || grade < 0 || grade > 100) {
+            this.showNotification('Please enter a valid grade (0-100)', 'error');
+            return;
+        }
+
+        try {
+            AssignmentSystem.gradeSubmission(
+                this.currentSubmission.assignmentId,
+                this.currentSubmission.submissionId,
+                { grade, feedback }
+            );
+            this.showNotification('Grade submitted successfully', 'success');
+            this.hideModal('submissionDetailsModal');
+            this.switchAssignmentTab('submitted'); // Refresh the submissions list
+        } catch (error) {
+            this.showNotification(error.message, 'error');
+        }
+    },
+
+    closeSubmissionDetails() {
+        this.hideModal('submissionDetailsModal');
+        this.currentSubmission = null;
+    },
+
+    getStudentName(studentId) {
+        const student = AdminSystem.getStudents().find(s => s.id === studentId);
+        return student ? `${student.firstName} ${student.lastName}` : 'Unknown Student';
+    },
+
+    deleteAssignment(id) {
+        if (!confirm('Are you sure you want to delete this assignment?')) return;
+
+        try {
+            AssignmentSystem.deleteAssignment(id);
+            this.showNotification('Assignment deleted successfully', 'success');
+            this.hideModal('assignmentDetailsModal');
+            // Refresh the teacher details view if it's open
+            const teacherModal = document.getElementById('teacherDetailsModal');
+            if (teacherModal && teacherModal.style.display === 'block') {
+                const teacherId = parseInt(teacherModal.querySelector('[onclick^="AdminUI.createAssignment"]')
+                    .getAttribute('onclick')
+                    .match(/\d+/)[0]);
+                this.viewTeacherDetails(teacherId);
+            }
+        } catch (error) {
+            this.showNotification(error.message, 'error');
         }
     },
 

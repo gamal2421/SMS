@@ -3,9 +3,66 @@ const AdminSystem = {
     // Mock Data - In a real system, this would be fetched from a backend
     data: {
     students: [
-        { id: 1, firstName: 'John', lastName: 'Smith', email: 'john@school.com', grade: '10', section: 'A', contact: '123-456-7890' },
-        { id: 2, firstName: 'Sarah', lastName: 'Johnson', email: 'sarah@school.com', grade: '11', section: 'B', contact: '123-456-7891' },
-        { id: 3, firstName: 'Mike', lastName: 'Wilson', email: 'mike@school.com', grade: '9', section: 'C', contact: '123-456-7892' }
+        { 
+            id: 1, 
+            firstName: 'John', 
+            lastName: 'Smith', 
+            email: 'john@school.com', 
+            grade: '10', 
+            section: 'A', 
+            contact: '123-456-7890',
+            enrolledClasses: ['Mathematics 10A', 'English 11B', 'Physics 10A']
+        },
+        { 
+            id: 2, 
+            firstName: 'Sarah', 
+            lastName: 'Johnson', 
+            email: 'sarah@school.com', 
+            grade: '11', 
+            section: 'B', 
+            contact: '123-456-7891',
+            enrolledClasses: ['Mathematics 11B', 'English 11B', 'Chemistry 11A']
+        },
+        { 
+            id: 3, 
+            firstName: 'Mike', 
+            lastName: 'Wilson', 
+            email: 'mike@school.com', 
+            grade: '9', 
+            section: 'C', 
+            contact: '123-456-7892',
+            enrolledClasses: ['Science 9C', 'Mathematics 9C', 'English 9A']
+        },
+        { 
+            id: 4, 
+            firstName: 'Emma', 
+            lastName: 'Davis', 
+            email: 'emma@school.com', 
+            grade: '10', 
+            section: 'A', 
+            contact: '123-456-7893',
+            enrolledClasses: ['Mathematics 10A', 'Physics 10A', 'English 10B']
+        },
+        { 
+            id: 5, 
+            firstName: 'James', 
+            lastName: 'Brown', 
+            email: 'james@school.com', 
+            grade: '11', 
+            section: 'B', 
+            contact: '123-456-7894',
+            enrolledClasses: ['Chemistry 11A', 'Mathematics 11B', 'Biology 11C']
+        },
+        { 
+            id: 6, 
+            firstName: 'Lisa', 
+            lastName: 'Anderson', 
+            email: 'lisa@school.com', 
+            grade: '9', 
+            section: 'C', 
+            contact: '123-456-7895',
+            enrolledClasses: ['Science 9C', 'English 9A', 'History 9B']
+        }
     ],
     teachers: [
             { 
@@ -301,7 +358,15 @@ const AdminSystem = {
 
         // Check if teacher has assigned classes
         if (teacher.assignedClasses && teacher.assignedClasses.length > 0) {
-            throw new Error('Cannot delete teacher with assigned classes');
+            const classesStr = teacher.assignedClasses.join(', ');
+            throw {
+                code: 'TEACHER_HAS_CLASSES',
+                message: 'Cannot delete teacher with assigned classes',
+                details: {
+                    teacherName: `${teacher.firstName} ${teacher.lastName}`,
+                    assignedClasses: teacher.assignedClasses
+                }
+            };
         }
 
         const index = this.data.teachers.findIndex(t => t.id === id);
@@ -431,7 +496,14 @@ const AdminSystem = {
 
         // Check if class has students
         if (classToDelete.currentStudents > 0) {
-            throw new Error('Cannot delete class with enrolled students');
+            throw {
+                code: 'CLASS_HAS_STUDENTS',
+                message: 'Cannot delete class with enrolled students',
+                details: {
+                    className: classToDelete.name,
+                    enrolledStudents: classToDelete.currentStudents
+                }
+            };
         }
 
         // Remove class from teacher's assigned classes

@@ -56,130 +56,6 @@ const mockData = {
     ]
 };
 
-// UI Functions
-function openTab(tabName) {
-    // Hide all tab contents
-    const tabContents = document.querySelectorAll('.tab-content');
-    tabContents.forEach(content => content.style.display = 'none');
-
-    // Remove active class from all tab buttons
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    tabButtons.forEach(button => button.classList.remove('active'));
-
-    // Show the selected tab content and activate its button
-    document.getElementById(tabName).style.display = 'block';
-    document.querySelector(`[onclick="openTab('${tabName}')"]`).classList.add('active');
-
-    // Load tab-specific data
-    switch(tabName) {
-        case 'dashboard':
-            updateDashboard();
-            break;
-        case 'classes':
-            updateClasses();
-            break;
-        case 'students':
-            updateStudents();
-            break;
-        case 'assignments':
-            updateAssignments();
-            break;
-        case 'profile':
-            updateProfile();
-            break;
-    }
-}
-
-// Dashboard Updates
-function updateDashboard() {
-    // Update stats
-    document.getElementById('total-classes').textContent = mockData.stats.totalClasses;
-    document.getElementById('total-students').textContent = mockData.stats.totalStudents;
-    document.getElementById('total-assignments').textContent = mockData.stats.totalAssignments;
-    document.getElementById('attendance-rate').textContent = mockData.stats.attendanceRate + '%';
-
-    // Update schedule
-    const scheduleList = document.getElementById('schedule-list');
-    scheduleList.innerHTML = mockData.schedule.map(item => `
-        <div class="schedule-item">
-            <div class="schedule-time">${item.time}</div>
-            <div class="schedule-details">
-                <h3>${item.class} - ${item.subject}</h3>
-                <p>${item.room}</p>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Classes Updates
-function updateClasses() {
-    const classesList = document.getElementById('classes-list');
-    classesList.innerHTML = mockData.classes.map(classItem => `
-        <div class="card">
-            <h3>${classItem.name}</h3>
-            <p><strong>Subject:</strong> ${classItem.subject}</p>
-            <p><strong>Students:</strong> ${classItem.students}</p>
-            <p><strong>Schedule:</strong> ${classItem.schedule}</p>
-            <p><strong>Room:</strong> ${classItem.room}</p>
-            <div class="card-actions">
-                <button class="btn btn-secondary" onclick="viewClassDetails('${classItem.id}')">
-                    View Details
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Students Updates
-function updateStudents() {
-    const studentsList = document.getElementById('students-list');
-    studentsList.innerHTML = mockData.students.map(student => `
-        <div class="card">
-            <h3>${student.name}</h3>
-            <p><strong>Grade:</strong> ${student.grade}</p>
-            <p><strong>Attendance:</strong> ${student.attendance}</p>
-            <p><strong>Performance:</strong> ${student.performance}</p>
-            <div class="card-actions">
-                <button class="btn btn-secondary" onclick="viewStudentDetails('${student.id}')">
-                    View Details
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Assignments Updates
-function updateAssignments() {
-    const assignmentsList = document.getElementById('assignments-list');
-    assignmentsList.innerHTML = mockData.assignments.map(assignment => `
-        <div class="card">
-            <h3>${assignment.title}</h3>
-            <p><strong>Class:</strong> ${assignment.class}</p>
-            <p><strong>Due Date:</strong> ${assignment.dueDate}</p>
-            <p><strong>Status:</strong> ${assignment.status}</p>
-            <p><strong>Submissions:</strong> ${assignment.submissions}/${assignment.totalStudents}</p>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: ${(assignment.submissions/assignment.totalStudents*100)}%"></div>
-            </div>
-            <div class="card-actions">
-                <button class="btn btn-secondary" onclick="viewAssignmentDetails('${assignment.id}')">
-                    View Details
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Profile Updates
-function updateProfile() {
-    const user = mockData.currentUser;
-    document.getElementById('profile-name').textContent = `${user.firstName} ${user.lastName}`;
-    document.getElementById('profile-email').textContent = user.email;
-    document.getElementById('profile-phone').textContent = user.phone;
-    document.getElementById('profile-subjects').textContent = user.subjects.join(', ');
-    document.getElementById('profile-qualification').textContent = user.qualification;
-}
-
 // Modal Functions
 function showModal(modalId) {
     document.getElementById(modalId).style.display = 'block';
@@ -191,14 +67,407 @@ function closeModal(modalId) {
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
-    // Update user info in header
-    const user = mockData.currentUser;
-    document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
-    document.getElementById('userAvatar').textContent = `${user.firstName[0]}${user.lastName[0]}`;
-    
-    // Set initial active tab
-    openTab('dashboard');
-    
-    // Show welcome toast
-    showToast('Welcome back, ' + user.firstName + '!', 'info');
-}); 
+    // Initialize TeacherUI
+    TeacherUI.init();
+});
+
+const TeacherUI = {
+    init() {
+        this.setupEventListeners();
+        this.loadInitialData();
+    },
+
+    setupEventListeners() {
+        // Tab navigation
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const tabId = e.currentTarget.getAttribute('data-tab');
+                this.switchTab(tabId);
+            });
+        });
+
+        // Logout button
+        document.querySelector('[data-action="logout"]').addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+
+        // Create assignment buttons
+        document.querySelectorAll('[data-action="create-assignment"]').forEach(button => {
+            button.addEventListener('click', () => this.showCreateAssignmentModal());
+        });
+
+        // Setup attendance date change
+        const attendanceDate = document.getElementById('attendanceDate');
+        if (attendanceDate) {
+            attendanceDate.value = new Date().toISOString().split('T')[0];
+            attendanceDate.addEventListener('change', () => this.loadAttendanceData());
+        }
+
+        // Setup class selection for attendance and grades
+        ['attendanceClass', 'gradesClass'].forEach(id => {
+            const select = document.getElementById(id);
+            if (select) {
+                select.addEventListener('change', () => {
+                    if (id === 'attendanceClass') this.loadAttendanceData();
+                    else this.loadGradesData();
+                });
+            }
+        });
+    },
+
+    loadInitialData() {
+        // Load teacher profile
+        const teacher = mockData.currentUser;
+        document.getElementById('userName').textContent = `${teacher.firstName} ${teacher.lastName}`;
+        document.getElementById('userAvatar').textContent = Utils.getInitials(`${teacher.firstName} ${teacher.lastName}`);
+
+        // Load dashboard data
+        this.updateDashboardStats();
+        this.loadTodayClasses();
+        this.loadPendingTasks();
+
+        // Populate class dropdowns
+        this.populateClassDropdowns();
+    },
+
+    switchTab(tabId) {
+        // Update active tab button
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-tab') === tabId) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Update visible content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`${tabId}-section`).classList.add('active');
+
+        // Load tab-specific data
+        switch(tabId) {
+            case 'dashboard':
+                this.updateDashboardStats();
+                this.loadTodayClasses();
+                this.loadPendingTasks();
+                break;
+            case 'classes':
+                this.loadClasses();
+                break;
+            case 'assignments':
+                this.loadAssignments();
+                break;
+            case 'attendance':
+                this.loadAttendanceData();
+                break;
+            case 'grades':
+                this.loadGradesData();
+                break;
+            case 'profile':
+                this.loadProfile();
+                break;
+        }
+    },
+
+    updateDashboardStats() {
+        document.getElementById('totalClasses').textContent = mockData.stats.totalClasses;
+        document.getElementById('totalStudents').textContent = mockData.stats.totalStudents;
+        document.getElementById('totalAssignments').textContent = mockData.stats.totalAssignments;
+        document.getElementById('avgAttendance').textContent = mockData.stats.attendanceRate + '%';
+    },
+
+    loadTodayClasses() {
+        const todayClasses = document.getElementById('todayClassesList');
+        if (!todayClasses) return;
+
+        todayClasses.innerHTML = mockData.schedule.map(cls => `
+            <li class="schedule-item">
+                <div class="schedule-time">${cls.time}</div>
+                <div class="schedule-info">
+                    <div class="class-name">${cls.class}</div>
+                    <div class="room-info">${cls.room}</div>
+                </div>
+            </li>
+        `).join('');
+    },
+
+    loadPendingTasks() {
+        const pendingTasks = document.getElementById('pendingTasksList');
+        if (!pendingTasks) return;
+
+        const tasks = mockData.assignments
+            .filter(assignment => assignment.status === 'Active')
+            .map(assignment => `
+                <li class="task-item">
+                    <div class="task-info">
+                        <div class="task-title">${assignment.title}</div>
+                        <div class="task-meta">Due: ${Utils.formatDate(assignment.dueDate)}</div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn btn-small" onclick="TeacherUI.viewAssignment(${assignment.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </li>
+            `).join('');
+
+        pendingTasks.innerHTML = tasks || '<li class="no-tasks">No pending tasks</li>';
+    },
+
+    populateClassDropdowns() {
+        ['attendanceClass', 'gradesClass'].forEach(id => {
+            const select = document.getElementById(id);
+            if (select) {
+                select.innerHTML = '<option value="">Select Class</option>' +
+                    mockData.classes.map(cls => 
+                        `<option value="${cls.name}" ${cls.name === id.replace('Class ', '') ? 'selected' : ''}>${cls.name}</option>`
+                    ).join('');
+            }
+        });
+    },
+
+    loadClasses() {
+        const tableBody = document.getElementById('classesTableBody');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = mockData.classes.map(className => {
+            const studentsInClass = mockData.students.filter(student => student.grade === className.name);
+            return `
+                <tr>
+                    <td>${className.name}</td>
+                    <td>${className.name.match(/\d+/)[0]}</td>
+                    <td>${studentsInClass.length}</td>
+                    <td>${mockData.schedule.find(s => s.class === className.name)?.time || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-small" onclick="TeacherUI.viewClass('${className.name}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-small btn-primary" onclick="TeacherUI.createAssignment('${className.name}')">
+                            <i class="fas fa-plus"></i> Assignment
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    },
+
+    loadAssignments() {
+        const tableBody = document.getElementById('assignmentsTableBody');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = mockData.assignments.map(assignment => `
+            <tr>
+                <td>${assignment.title}</td>
+                <td>${assignment.class}</td>
+                <td>${Utils.formatDate(assignment.dueDate)}</td>
+                <td>
+                    <span class="status-badge ${assignment.status}">
+                        ${assignment.status.charAt(0).toUpperCase() + assignment.status.slice(1)}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-small" onclick="TeacherUI.viewAssignment(${assignment.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-small btn-primary" onclick="TeacherUI.editAssignment(${assignment.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-small btn-danger" onclick="TeacherUI.deleteAssignment(${assignment.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
+    loadAttendanceData() {
+        const classId = document.getElementById('attendanceClass').value;
+        const date = document.getElementById('attendanceDate').value;
+        const tableBody = document.getElementById('attendanceTableBody');
+        
+        if (!classId || !date || !tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="4" class="no-data">Select a class and date to view attendance</td></tr>';
+            return;
+        }
+
+        const studentsInClass = mockData.students.filter(student => student.grade === classId.replace('Class ', ''));
+        const attendanceData = mockData.assignments.filter(a => a.class === classId.replace('Class ', ''));
+
+        tableBody.innerHTML = studentsInClass.map(student => {
+            const attendance = attendanceData.find(a => a.id === student.id) || { status: 'unknown', notes: '' };
+            return `
+                <tr>
+                    <td>${student.name}</td>
+                    <td>
+                        <select class="attendance-select" onchange="TeacherUI.updateAttendance(${student.id}, this.value)">
+                            <option value="present" ${attendance.status === 'present' ? 'selected' : ''}>Present</option>
+                            <option value="absent" ${attendance.status === 'absent' ? 'selected' : ''}>Absent</option>
+                            <option value="late" ${attendance.status === 'late' ? 'selected' : ''}>Late</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="notes-input" value="${attendance.notes}"
+                            onchange="TeacherUI.updateAttendanceNotes(${student.id}, this.value)">
+                    </td>
+                    <td>
+                        <button class="btn btn-small" onclick="TeacherUI.viewStudentAttendance(${student.id})">
+                            <i class="fas fa-history"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    },
+
+    loadGradesData() {
+        const classId = document.getElementById('gradesClass').value;
+        const tableBody = document.getElementById('gradesTableBody');
+        
+        if (!classId || !tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="5" class="no-data">Select a class to view grades</td></tr>';
+            return;
+        }
+
+        const studentsInClass = mockData.students.filter(student => student.grade === classId.replace('Class ', ''));
+        const relevantAssignments = mockData.assignments.filter(a => a.class === classId.replace('Class ', ''));
+
+        tableBody.innerHTML = studentsInClass.map(student => {
+            const studentGrades = mockData.assignments.filter(a => a.id === student.id);
+            const average = studentGrades.reduce((acc, curr) => acc + curr.submissions, 0) / studentGrades.length || 0;
+
+            return `
+                <tr>
+                    <td>${student.name}</td>
+                    <td>${average.toFixed(1)}%</td>
+                    <td>
+                        ${relevantAssignments.map(assignment => {
+                            const grade = studentGrades.find(g => g.id === assignment.id);
+                            return `
+                                <div class="grade-item">
+                                    <span class="assignment-name">${assignment.title}:</span>
+                                    <input type="number" min="0" max="100" value="${grade?.submissions || ''}"
+                                        onchange="TeacherUI.updateGrade(${student.id}, ${assignment.id}, this.value)">
+                                </div>
+                            `;
+                        }).join('')}
+                    </td>
+                    <td>
+                        <button class="btn btn-small" onclick="TeacherUI.viewStudentGrades(${student.id})">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    },
+
+    // Modal handling methods
+    showCreateAssignmentModal(classId = null) {
+        const modalContent = `
+            <div class="modal-header">
+                <h2>Create New Assignment</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="createAssignmentForm">
+                    <div class="form-group">
+                        <label for="assignmentTitle">Title</label>
+                        <input type="text" id="assignmentTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentClass">Class</label>
+                        <select id="assignmentClass" required>
+                            ${mockData.classes.map(cls => 
+                                `<option value="${cls.name}" ${cls.name === classId ? 'selected' : ''}>${cls.name}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentDescription">Description</label>
+                        <textarea id="assignmentDescription" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentDueDate">Due Date</label>
+                        <input type="date" id="assignmentDueDate" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="Modal.hide('assignmentModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Assignment</button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        const modal = document.getElementById('assignmentModal');
+        modal.innerHTML = modalContent;
+        
+        const form = modal.querySelector('form');
+        form.addEventListener('submit', (e) => this.handleCreateAssignment(e));
+        
+        Modal.show('assignmentModal');
+    },
+
+    handleCreateAssignment(event) {
+        event.preventDefault();
+        const form = event.target;
+        const { isValid, errors } = FormValidator.validateForm(form);
+
+        if (!isValid) {
+            Utils.showNotification(errors.join('\n'), 'error');
+            return;
+        }
+
+        const newAssignment = {
+            id: mockData.assignments.length + 1,
+            title: form.querySelector('#assignmentTitle').value,
+            class: form.querySelector('#assignmentClass').value,
+            description: form.querySelector('#assignmentDescription').value,
+            dueDate: form.querySelector('#assignmentDueDate').value,
+            status: 'Active'
+        };
+
+        mockData.assignments.push(newAssignment);
+        Utils.showNotification('Assignment created successfully');
+        Modal.hide('assignmentModal');
+        this.loadAssignments();
+        this.loadPendingTasks();
+    },
+
+    // Other UI methods...
+    viewClass(className) {
+        // Implementation for viewing class details
+    },
+
+    viewAssignment(id) {
+        // Implementation for viewing assignment details
+    },
+
+    editAssignment(id) {
+        // Implementation for editing assignment
+    },
+
+    deleteAssignment(id) {
+        // Implementation for deleting assignment
+    },
+
+    updateAttendance(studentId, status) {
+        // Implementation for updating attendance
+    },
+
+    updateAttendanceNotes(studentId, notes) {
+        // Implementation for updating attendance notes
+    },
+
+    updateGrade(studentId, assignmentId, grade) {
+        // Implementation for updating grades
+    },
+
+    viewStudentAttendance(studentId) {
+        // Implementation for viewing student attendance history
+    },
+
+    viewStudentGrades(studentId) {
+        // Implementation for viewing student grade history
+    }
+}; 

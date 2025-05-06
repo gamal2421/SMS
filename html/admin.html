@@ -7,9 +7,73 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/teacher.css">
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
+
+    <style>
+        .modal-lg {
+            max-width: 900px;
+        }
+
+        .assignments-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .assignment-tab-content {
+            display: none;
+        }
+
+        .assignment-tab-content.active {
+            display: block;
+        }
+
+        .submissions-list, .graded-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .submission-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .submission-files {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .file-item {
+            background: var(--primary-light);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .file-item i {
+            color: var(--primary);
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -188,6 +252,76 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher Assignment View Modal -->
+            <div id="teacherAssignmentsModal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h2 class="modal-title"><i class="fas fa-tasks"></i> Assignment Management</h2>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="assignments-tabs">
+                            <button class="tab-btn active" onclick="AdminUI.switchAssignmentTab('active')">
+                                Active Assignments
+                            </button>
+                            <button class="tab-btn" onclick="AdminUI.switchAssignmentTab('submitted')">
+                                Submitted Assignments
+                            </button>
+                            <button class="tab-btn" onclick="AdminUI.switchAssignmentTab('graded')">
+                                Graded Assignments
+                            </button>
+                        </div>
+
+                        <div id="activeAssignments" class="assignment-tab-content active">
+                            <div class="assignments-list" id="activeAssignmentsList">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div id="submittedAssignments" class="assignment-tab-content">
+                            <div class="submissions-list" id="submittedAssignmentsList">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div id="gradedAssignments" class="assignment-tab-content">
+                            <div class="graded-list" id="gradedAssignmentsList">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignment Submission Details Modal -->
+            <div id="submissionDetailsModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title"><i class="fas fa-file-alt"></i> Submission Details</h2>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="submission-details" id="submissionDetailsContent">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                        <div class="grading-form" id="gradingForm">
+                            <div class="form-group">
+                                <label for="grade">Grade</label>
+                                <input type="number" id="grade" class="form-control" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="feedback">Feedback</label>
+                                <textarea id="feedback" class="form-control" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="AdminUI.closeSubmissionDetails()">Close</button>
+                        <button class="btn btn-primary" onclick="AdminUI.submitGrade()">Submit Grade</button>
                     </div>
                 </div>
             </div>
@@ -425,6 +559,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="js/assignments.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/admin-ui.js"></script>
 </body>
