@@ -1,86 +1,128 @@
-.login-container {
+body {
+    margin: 0;
+    padding: 0;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    font-family:Sans-serif ;
+}
+
+*{
+    font-family:Sans-serif ;
+}
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
 }
 
 .login-card {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .login-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 30px;
 }
 
 .login-header h1 {
     color: var(--primary-color);
-    margin-bottom: 0.5rem;
+    margin: 0;
+    font-size: 2em;
+    font-weight: 600;
 }
 
 .login-header p {
-    color: var(--dark-gray);
+    color: var(--text-muted);
+    margin: 10px 0 0;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 20px;
+    position: relative;
 }
 
 .form-group input {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--light-gray);
-    border-radius: 4px;
-    font-size: 1rem;
+    padding: 12px 15px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    font-size: 1em;
+    transition: all 0.3s;
+    outline: none;
 }
 
 .form-group input:focus {
-    outline: none;
+
     border-color: var(--primary-color);
+
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-muted);
 }
 
 .submit-btn {
     width: 100%;
-    padding: 0.75rem;
-    background-color: var(--primary-color);
-    color: var(--white);
+    padding: 12px;
+    background: var(--primary-color);
+    color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s;
 }
 
 .submit-btn:hover {
     background-color: var(--primary-dark);
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 6px 15px rgba(106, 13, 173, 0.4); /* Enhanced shadow on hover */
 }
 
-.register-link {
-    text-align: center;
-    margin-top: 1rem;
-}
-
-.register-link a {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-.register-link a:hover {
-    text-decoration: underline;
-}
 
 .error-message {
-    color: var(--danger-color);
+    color: var(--error-color);
     text-align: center;
-    margin-top: 1rem;
-    display: none;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.sample-accounts {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.sample-accounts h3 {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.account-list {
+    font-size: 0.8em;
+    color: var(--text-muted);
+}
+
+.account-list div {
+    margin-bottom: 8px;
+}
+
+.account-list strong {
+    color: var(--primary-color);
 }
 
 /* Toast Styles */
@@ -102,13 +144,62 @@
 }
 
 .toast.success {
-    background: #28a745; /* A different shade of green */
+    background: #4CAF50;
 }
 
 .toast.error {
-    background: #f44336; /* Red for error messages */
+    background: #f44336;
 }
 
 .toast.info {
-    background: var(--primary-color); /* Use primary color for info messages */
-} 
+    background: var(--primary-color);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #eee;
+    border-radius: 4px;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.checkbox-custom::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: white;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+    opacity: 1;
+}
