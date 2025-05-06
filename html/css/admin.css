@@ -24,14 +24,14 @@
   
   /* Base Styles */
   * {
-    font-family: cursive;
+    font-family: Sans-serif;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
   }
   
   body {
-    font-family: cursive;
+    font-family: Sans-serif;
     background-color: var(--bg-body);
     color: var(--text);
     line-height: 1.6;
