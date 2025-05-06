@@ -126,4 +126,176 @@ function showToast(message, type = 'info') {
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }, 100);
-} 
+}
+
+// Utility Functions
+const Utils = {
+    formatDate(date) {
+        return new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    },
+
+    formatTime(time) {
+        return new Date(time).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    },
+
+    getInitials(name) {
+        return name
+            .split(' ')
+            .map(word => word[0])
+            .join('')
+            .toUpperCase();
+    },
+
+    showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    },
+
+    validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    },
+
+    validatePhone(phone) {
+        const re = /^\d{3}-\d{3}-\d{4}$/;
+        return re.test(phone);
+    }
+};
+
+// Modal Management
+const Modal = {
+    currentModal: null,
+
+    show(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        modal.style.display = 'block';
+        this.currentModal = modal;
+        document.body.classList.add('modal-open');
+    },
+
+    hide(modalId) {
+        const modal = modalId ? document.getElementById(modalId) : this.currentModal;
+        if (!modal) return;
+
+        modal.style.display = 'none';
+        this.currentModal = null;
+        document.body.classList.remove('modal-open');
+    },
+
+    init() {
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                this.hide(e.target.id);
+            }
+        });
+
+        // Close modal when clicking close button
+        document.querySelectorAll('.close-modal').forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal');
+                if (modal) {
+                    this.hide(modal.id);
+                }
+            });
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.currentModal) {
+                this.hide();
+            }
+        });
+    }
+};
+
+// Form Validation
+const FormValidator = {
+    validateForm(form) {
+        let isValid = true;
+        const errors = [];
+
+        form.querySelectorAll('input, select, textarea').forEach(field => {
+            if (field.hasAttribute('required') && !field.value.trim()) {
+                isValid = false;
+                errors.push(`${field.name || field.id} is required`);
+                this.showFieldError(field, 'This field is required');
+            } else {
+                this.clearFieldError(field);
+            }
+
+            if (field.type === 'email' && field.value && !Utils.validateEmail(field.value)) {
+                isValid = false;
+                errors.push('Invalid email format');
+                this.showFieldError(field, 'Invalid email format');
+            }
+
+            if (field.type === 'tel' && field.value && !Utils.validatePhone(field.value)) {
+                isValid = false;
+                errors.push('Invalid phone format (use: 123-456-7890)');
+                this.showFieldError(field, 'Invalid phone format (use: 123-456-7890)');
+            }
+        });
+
+        return { isValid, errors };
+    },
+
+    showFieldError(field, message) {
+        field.classList.add('invalid');
+        const errorDiv = field.nextElementSibling;
+        if (errorDiv && errorDiv.classList.contains('error-message')) {
+            errorDiv.textContent = message;
+        } else {
+            const div = document.createElement('div');
+            div.className = 'error-message';
+            div.textContent = message;
+            field.parentNode.insertBefore(div, field.nextSibling);
+        }
+    },
+
+    clearFieldError(field) {
+        field.classList.remove('invalid');
+        const errorDiv = field.nextElementSibling;
+        if (errorDiv && errorDiv.classList.contains('error-message')) {
+            errorDiv.textContent = '';
+        }
+    },
+
+    setupFormValidation(form) {
+        form.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', () => {
+                this.clearFieldError(field);
+            });
+
+            field.addEventListener('blur', () => {
+                if (field.hasAttribute('required') && !field.value.trim()) {
+                    this.showFieldError(field, 'This field is required');
+                }
+            });
+        });
+    }
+};
+
+// Initialize common functionality
+document.addEventListener('DOMContentLoaded', () => {
+    Modal.init();
+}); 

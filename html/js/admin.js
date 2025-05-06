@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // API Communication Layer
 class AdminAPI {
     constructor() {
@@ -11,6 +12,160 @@ class AdminAPI {
         if (!window.location.pathname.includes('login.html') && !this.token) {
             window.location.href = './login.html';
             return;
+=======
+// Data Management and Business Logic
+const AdminSystem = {
+    // Mock Data - In a real system, this would be fetched from a backend
+    data: {
+    students: [
+        { 
+            id: 1, 
+            firstName: 'John', 
+            lastName: 'Smith', 
+            email: 'john@school.com', 
+            grade: '10', 
+            section: 'A', 
+            contact: '123-456-7890',
+            enrolledClasses: ['Mathematics 10A', 'English 11B', 'Physics 10A']
+        },
+        { 
+            id: 2, 
+            firstName: 'Sarah', 
+            lastName: 'Johnson', 
+            email: 'sarah@school.com', 
+            grade: '11', 
+            section: 'B', 
+            contact: '123-456-7891',
+            enrolledClasses: ['Mathematics 11B', 'English 11B', 'Chemistry 11A']
+        },
+        { 
+            id: 3, 
+            firstName: 'Mike', 
+            lastName: 'Wilson', 
+            email: 'mike@school.com', 
+            grade: '9', 
+            section: 'C', 
+            contact: '123-456-7892',
+            enrolledClasses: ['Science 9C', 'Mathematics 9C', 'English 9A']
+        },
+        { 
+            id: 4, 
+            firstName: 'Emma', 
+            lastName: 'Davis', 
+            email: 'emma@school.com', 
+            grade: '10', 
+            section: 'A', 
+            contact: '123-456-7893',
+            enrolledClasses: ['Mathematics 10A', 'Physics 10A', 'English 10B']
+        },
+        { 
+            id: 5, 
+            firstName: 'James', 
+            lastName: 'Brown', 
+            email: 'james@school.com', 
+            grade: '11', 
+            section: 'B', 
+            contact: '123-456-7894',
+            enrolledClasses: ['Chemistry 11A', 'Mathematics 11B', 'Biology 11C']
+        },
+        { 
+            id: 6, 
+            firstName: 'Lisa', 
+            lastName: 'Anderson', 
+            email: 'lisa@school.com', 
+            grade: '9', 
+            section: 'C', 
+            contact: '123-456-7895',
+            enrolledClasses: ['Science 9C', 'English 9A', 'History 9B']
+        }
+    ],
+    teachers: [
+            { 
+                id: 1, 
+                firstName: 'Jane', 
+                lastName: 'Doe', 
+                email: 'jane@school.com', 
+                subject: 'Mathematics', 
+                contact: '123-456-7893',
+                qualification: 'M.Sc. Mathematics',
+                bio: 'Experienced mathematics teacher with 5 years of teaching experience.',
+                assignedClasses: ['Mathematics 10A', 'Mathematics 11B']
+            },
+            { 
+                id: 2, 
+                firstName: 'Robert', 
+                lastName: 'Brown', 
+                email: 'robert@school.com', 
+                subject: 'English', 
+                contact: '123-456-7894',
+                qualification: 'M.A. English Literature',
+                bio: 'Passionate about literature and creative writing.',
+                assignedClasses: ['English 11B', 'English 10A']
+            },
+            { 
+                id: 3, 
+                firstName: 'Emily', 
+                lastName: 'White', 
+                email: 'emily@school.com', 
+                subject: 'Science', 
+                contact: '123-456-7895',
+                qualification: 'Ph.D. Physics',
+                bio: 'Specializes in practical science experiments and interactive learning.',
+                assignedClasses: ['Science 9C', 'Physics 11A']
+            }
+    ],
+    classes: [
+            { 
+                id: 1, 
+                name: 'Mathematics 10A', 
+                grade: '10', 
+                teacher: 'Jane Doe',
+                subject: 'Mathematics',
+                capacity: 35,
+                currentStudents: 30,
+                schedule: 'Mon, Wed 9:00-10:30',
+                description: 'Advanced mathematics class covering algebra and trigonometry',
+                room: 'Room 101',
+                status: 'active'
+            },
+            { 
+                id: 2, 
+                name: 'English 11B', 
+                grade: '11', 
+                teacher: 'Robert Brown',
+                subject: 'English',
+                capacity: 30,
+                currentStudents: 25,
+                schedule: 'Tue, Thu 11:00-12:30',
+                description: 'Advanced English literature and composition',
+                room: 'Room 203',
+                status: 'active'
+            },
+            { 
+                id: 3, 
+                name: 'Science 9C', 
+                grade: '9', 
+                teacher: 'Emily White',
+                subject: 'Science',
+                capacity: 32,
+                currentStudents: 28,
+                schedule: 'Mon, Wed, Fri 13:00-14:00',
+                description: 'Introduction to general science concepts',
+                room: 'Lab 1',
+                status: 'active'
+            }
+    ],
+    activities: [
+        { action: 'New student registered', timestamp: '2 hours ago' },
+        { action: 'Teacher updated profile', timestamp: '3 hours ago' },
+        { action: 'New class created', timestamp: '1 day ago' },
+        { action: 'System maintenance completed', timestamp: '2 days ago' }
+        ],
+        currentUser: {
+        initials: 'AD',
+        name: 'Admin User',
+        email: 'admin@school.com'
+>>>>>>> bd2aa6b26b1b74a5ce711fbbdce6b42612ef8105
         }
     }
 
@@ -308,12 +463,272 @@ class AdminAPI {
             console.error(`API Error - Unlinking student ${studentId} from parent ${parentId}:`, error);
             throw error;
         }
+<<<<<<< HEAD
     }
 
     // Class Management
     async getClasses(params = {}) {
         const queryString = new URLSearchParams(params).toString();
         return await this.request(`/admin/classes${queryString ? `?${queryString}` : ''}`);
+=======
+
+        // Check for duplicate email, excluding current teacher
+        if (this.data.teachers.some(t => t.email === teacherData.email && t.id !== id)) {
+            throw new Error('A teacher with this email already exists');
+        }
+
+        // Preserve assigned classes if not provided in update
+        const assignedClasses = teacherData.assignedClasses || this.data.teachers[index].assignedClasses;
+        
+        this.data.teachers[index] = { 
+            ...this.data.teachers[index], 
+            ...teacherData,
+            assignedClasses 
+        };
+        
+        this.logActivity(`Teacher ${teacherData.firstName} ${teacherData.lastName} information updated`);
+        return this.data.teachers[index];
+    },
+
+    deleteTeacher(id) {
+        const teacher = this.data.teachers.find(t => t.id === id);
+        if (!teacher) {
+            throw new Error('Teacher not found');
+        }
+
+        // Check if teacher has assigned classes
+        if (teacher.assignedClasses && teacher.assignedClasses.length > 0) {
+            const classesStr = teacher.assignedClasses.join(', ');
+            throw {
+                code: 'TEACHER_HAS_CLASSES',
+                message: 'Cannot delete teacher with assigned classes',
+                details: {
+                    teacherName: `${teacher.firstName} ${teacher.lastName}`,
+                    assignedClasses: teacher.assignedClasses
+                }
+            };
+        }
+
+        const index = this.data.teachers.findIndex(t => t.id === id);
+        this.data.teachers.splice(index, 1);
+        this.logActivity(`Teacher ${teacher.firstName} ${teacher.lastName} removed from system`);
+        return true;
+    },
+
+    // Additional Teacher Methods
+    assignClassToTeacher(teacherId, className) {
+        const teacher = this.data.teachers.find(t => t.id === teacherId);
+        if (!teacher) return false;
+
+        if (!teacher.assignedClasses.includes(className)) {
+            teacher.assignedClasses.push(className);
+            this.logActivity(`Class ${className} assigned to ${teacher.firstName} ${teacher.lastName}`);
+            return true;
+        }
+        return false;
+    },
+
+    removeClassFromTeacher(teacherId, className) {
+        const teacher = this.data.teachers.find(t => t.id === teacherId);
+        if (!teacher) return false;
+
+        const index = teacher.assignedClasses.indexOf(className);
+        if (index !== -1) {
+            teacher.assignedClasses.splice(index, 1);
+            this.logActivity(`Class ${className} removed from ${teacher.firstName} ${teacher.lastName}`);
+            return true;
+        }
+        return false;
+    },
+
+    getTeachersBySubject(subject) {
+        return this.data.teachers.filter(t => t.subject === subject);
+    },
+
+    getTeacherClasses(teacherId) {
+        const teacher = this.data.teachers.find(t => t.id === teacherId);
+        return teacher ? teacher.assignedClasses : [];
+    },
+
+    // Class Management
+    addClass(classData) {
+        const errors = this.validateClassData(classData);
+        if (errors.length > 0) {
+            throw new Error(errors.join('\n'));
+        }
+
+        // Check for duplicate class name
+        if (this.data.classes.some(c => c.name === classData.name)) {
+            throw new Error('A class with this name already exists');
+        }
+
+        // Verify teacher exists
+        const teacher = this.data.teachers.find(t => 
+            `${t.firstName} ${t.lastName}` === classData.teacher
+        );
+        if (!teacher) {
+            throw new Error('Selected teacher not found');
+        }
+
+        const newId = this.data.classes.length > 0 
+            ? Math.max(...this.data.classes.map(c => c.id)) + 1 
+            : 1;
+            
+    const newClass = {
+            id: newId,
+            ...classData,
+            currentStudents: 0,
+            status: 'active'
+        };
+
+        this.data.classes.push(newClass);
+        this.assignClassToTeacher(teacher.id, newClass.name);
+        this.logActivity(`New class ${classData.name} created`);
+        return newClass;
+    },
+
+    updateClass(id, classData) {
+        const errors = this.validateClassData(classData);
+        if (errors.length > 0) {
+            throw new Error(errors.join('\n'));
+        }
+
+        const index = this.data.classes.findIndex(c => c.id === id);
+        if (index === -1) {
+            throw new Error('Class not found');
+        }
+
+        // Check for duplicate class name, excluding current class
+        if (this.data.classes.some(c => c.name === classData.name && c.id !== id)) {
+            throw new Error('A class with this name already exists');
+        }
+
+        // Verify teacher exists
+        const teacher = this.data.teachers.find(t => 
+            `${t.firstName} ${t.lastName}` === classData.teacher
+        );
+        if (!teacher) {
+            throw new Error('Selected teacher not found');
+        }
+
+        // Update teacher assignments if teacher changed
+        const oldTeacherName = this.data.classes[index].teacher;
+        if (oldTeacherName !== classData.teacher) {
+            const oldTeacher = this.data.teachers.find(t => 
+                `${t.firstName} ${t.lastName}` === oldTeacherName
+            );
+            if (oldTeacher) {
+                this.removeClassFromTeacher(oldTeacher.id, this.data.classes[index].name);
+            }
+            this.assignClassToTeacher(teacher.id, classData.name);
+        }
+
+        this.data.classes[index] = { ...this.data.classes[index], ...classData };
+        this.logActivity(`Class ${classData.name} updated`);
+        return this.data.classes[index];
+    },
+
+    deleteClass(id) {
+        const classToDelete = this.data.classes.find(c => c.id === id);
+        if (!classToDelete) {
+            throw new Error('Class not found');
+        }
+
+        // Check if class has students
+        if (classToDelete.currentStudents > 0) {
+            throw {
+                code: 'CLASS_HAS_STUDENTS',
+                message: 'Cannot delete class with enrolled students',
+                details: {
+                    className: classToDelete.name,
+                    enrolledStudents: classToDelete.currentStudents
+                }
+            };
+        }
+
+        // Remove class from teacher's assigned classes
+        const teacher = this.data.teachers.find(t => 
+            `${t.firstName} ${t.lastName}` === classToDelete.teacher
+        );
+        if (teacher) {
+            this.removeClassFromTeacher(teacher.id, classToDelete.name);
+        }
+
+        const index = this.data.classes.findIndex(c => c.id === id);
+        this.data.classes.splice(index, 1);
+        this.logActivity(`Class ${classToDelete.name} deleted`);
+        return true;
+    },
+
+    // Additional Class Methods
+    getClassesByTeacher(teacherName) {
+        return this.data.classes.filter(c => c.teacher === teacherName);
+    },
+
+    getClassesByGrade(grade) {
+        return this.data.classes.filter(c => c.grade === grade);
+    },
+
+    getClassesBySubject(subject) {
+        return this.data.classes.filter(c => c.subject === subject);
+    },
+
+    enrollStudent(classId) {
+        const classObj = this.data.classes.find(c => c.id === classId);
+        if (!classObj) return false;
+
+        if (classObj.currentStudents >= classObj.capacity) {
+            return {
+                success: false,
+                error: 'Class has reached maximum capacity'
+            };
+        }
+
+        classObj.currentStudents++;
+        this.logActivity(`New student enrolled in ${classObj.name}`);
+        return {
+            success: true,
+            data: classObj
+        };
+    },
+
+    removeStudent(classId) {
+        const classObj = this.data.classes.find(c => c.id === classId);
+        if (!classObj) return false;
+
+        if (classObj.currentStudents > 0) {
+            classObj.currentStudents--;
+            this.logActivity(`Student removed from ${classObj.name}`);
+            return {
+                success: true,
+                data: classObj
+            };
+        }
+
+        return {
+            success: false,
+            error: 'No students to remove from class'
+        };
+    },
+
+    // Activity Logging
+    logActivity(action) {
+        const timestamp = new Date().toLocaleTimeString();
+        this.data.activities.unshift({
+            action,
+            timestamp: 'Just now'
+        });
+        // Keep only last 10 activities
+        if (this.data.activities.length > 10) {
+            this.data.activities.pop();
+        }
+    },
+
+    // Authentication
+    logout() {
+        // In a real system, this would clear session/tokens
+        window.location.href = 'login.html';
+>>>>>>> bd2aa6b26b1b74a5ce711fbbdce6b42612ef8105
     }
 
     async getClass(id) {

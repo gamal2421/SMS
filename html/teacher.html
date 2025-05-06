@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Teacher Dashboard - School Management System</title>
     <link rel="stylesheet" href="css/teacher.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
 
+=======
+    <title>Teacher Portal | School Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/teacher.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>👨‍🏫</text></svg>">
+>>>>>>> bd2aa6b26b1b74a5ce711fbbdce6b42612ef8105
 </head>
 <body>
     <div class="app-container">
     <header>
         <div class="logo">
+<<<<<<< HEAD
                 <i class="fas fa-graduation-cap"></i>
                 <span>Teacher Dashboard</span>
             </div>
@@ -24,6 +35,15 @@
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </button>
+=======
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>TEACHER </span>
+        </div>
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar"></div>
+                <span class="user-name" id="userName"></span>
+>>>>>>> bd2aa6b26b1b74a5ce711fbbdce6b42612ef8105
             </div>
     </header>
 
@@ -431,6 +451,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- View Assignment Modal -->
     <div id="viewAssignmentModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -687,5 +708,25 @@
             window.teacherUI = new TeacherUI();
         });
     </script>
+=======
+    <!-- Add modals here -->
+    <div id="assignmentModal" class="modal">
+        <!-- Modal content will be dynamically inserted -->
+    </div>
+
+    <div id="classModal" class="modal">
+        <!-- Modal content will be dynamically inserted -->
+    </div>
+
+    <div id="profileModal" class="modal">
+        <!-- Modal content will be dynamically inserted -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/common.js"></script>
+    <script src="js/assignments.js"></script>
+    <script src="js/teacher-ui.js"></script>
+    <script src="js/teacher.js"></script>
+>>>>>>> bd2aa6b26b1b74a5ce711fbbdce6b42612ef8105
 </body>
 </html>
