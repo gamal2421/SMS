@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard - School Management System</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/parent.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
+
+
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="btn btn-back" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1><i class="fas fa-user-parent"></i> Parent Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="userName">David Wilson</span>
+                    <div class="avatar" id="userAvatar">DW</div>
+                </div>
+                <button class="btn btn-logout" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <button class="tab-btn active" onclick="openTab('dashboard')">
+                <i class="fas fa-home"></i> Dashboard
+            </button>
+            <button class="tab-btn" onclick="openTab('academics')">
+                <i class="fas fa-graduation-cap"></i> Academics
+            </button>
+            <button class="tab-btn" onclick="openTab('schedule')">
+                <i class="fas fa-calendar"></i> Schedule
+            </button>
+            <button class="tab-btn" onclick="openTab('fees')">
+                <i class="fas fa-credit-card"></i> Fees
+            </button>
+            <button class="tab-btn" onclick="openTab('communications')">
+                <i class="fas fa-envelope"></i> Communications
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-grid">
+                    <!-- Children Overview -->
+                    <div class="children-section">
+                        <h2><i class="fas fa-users"></i> Children</h2>
+                        <div id="children-overview" class="cards-grid">
+                            <div class="card">
+                                <div class="student-header">
+                                    <div class="student-avatar">MW</div>
+                                    <div class="student-info">
+                                        <h3>Mike Wilson</h3>
+                                        <p>Grade 9-C</p>
+                                    </div>
+                                </div>
+                                <div class="student-stats">
+                                    <div class="stat">
+                                        <label>Attendance</label>
+                                        <span>95%</span>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" data-progress="95"></div>
+                                        </div>
+                                    </div>
+                                    <div class="stat">
+                                        <label>Average Grade</label>
+                                        <span>88%</span>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" data-progress="88"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Announcements -->
+                    <div class="announcements-section">
+                        <h2><i class="fas fa-bullhorn"></i> Announcements</h2>
+                        <div id="announcements-list" class="cards-grid">
+                            <div class="card">
+                                <div class="announcement-header high">
+                                    <h3>Parent-Teacher Meeting</h3>
+                                    <span class="announcement-date">March 10, 2024</span>
+                                </div>
+                                <p>Annual parent-teacher meeting scheduled for April 5. Please mark your calendars.</p>
+                            </div>
+                            <div class="card">
+                                <div class="announcement-header medium">
+                                    <h3>School Holiday</h3>
+                                    <span class="announcement-date">March 15, 2024</span>
+                                </div>
+                                <p>School will be closed for spring break from March 20-28.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academics Tab -->
+            <div id="academics" class="tab-content" style="display: none;">
+                <div id="academics-container">
+                    <div class="grades-section">
+                        <h2>Grades</h2>
+                        <div class="grades-grid">
+                            <div class="card">
+                                <h3>Mathematics</h3>
+                                <div class="grades-chart">
+                                    <div class="grade-bar" style="height: 85%">
+                                        <span class="grade-value">85%</span>
+                                    </div>
+                                    <div class="grade-bar" style="height: 88%">
+                                        <span class="grade-value">88%</span>
+                                    </div>
+                                    <div class="grade-bar" style="height: 82%">
+                                        <span class="grade-value">82%</span>
+                                    </div>
+                                </div>
+                                <p><strong>Average:</strong> 85%</p>
+                            </div>
+                            <div class="card">
+                                <h3>Physics</h3>
+                                <div class="grades-chart">
+                                    <div class="grade-bar" style="height: 90%">
+                                        <span class="grade-value">90%</span>
+                                    </div>
+                                    <div class="grade-bar" style="height: 87%">
+                                        <span class="grade-value">87%</span>
+                                    </div>
+                                    <div class="grade-bar" style="height: 85%">
+                                        <span class="grade-value">85%</span>
+                                    </div>
+                                </div>
+                                <p><strong>Average:</strong> 87.3%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Tab -->
+            <div id="schedule" class="tab-content" style="display: none;">
+                <h2>Class Schedule</h2>
+                <div id="schedule-list" class="schedule-grid">
+                    <div class="schedule-day">
+                        <h3>Monday</h3>
+                        <div class="schedule-period">
+                            <span class="period-time">8:00 AM</span>
+                            <div class="period-details">
+                                <h4>Mathematics</h4>
+                                <p>Dr. Jane Doe</p>
+                            </div>
+                        </div>
+                        <div class="schedule-period">
+                            <span class="period-time">9:30 AM</span>
+                            <div class="period-details">
+                                <h4>Physics</h4>
+                                <p>Dr. Jane Doe</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fees Tab -->
+            <div id="fees" class="tab-content" style="display: none;">
+                <h2><i class="fas fa-credit-card"></i> School Fees</h2>
+                <div id="fees-container" class="cards-grid">
+                    <div class="card" id="tuition-fee">
+                        <div class="fee-header">
+                            <h3>Tuition Fee Q1</h3>
+                            <span class="status pending">Pending</span>
+                        </div>
+                        <div class="fee-details">
+                            <p><strong>Amount:</strong> $2,500</p>
+                            <p><strong>Due Date:</strong> March 30, 2024</p>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="payFee('tuition-fee')">
+                                <i class="fas fa-credit-card"></i> Pay Now
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card" id="library-fee">
+                        <div class="fee-header">
+                            <h3>Library Fee</h3>
+                            <span class="status paid">Paid</span>
+                        </div>
+                        <div class="fee-details">
+                            <p><strong>Amount:</strong> $100</p>
+                            <p><strong>Due Date:</strong> March 15, 2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communications Tab -->
+            <div id="communications" class="tab-content" style="display: none;">
+                <h2><i class="fas fa-envelope"></i> Messages</h2>
+                <div id="communications-container" class="cards-grid">
+                    <div class="card unread" id="message-attendance">
+                        <div class="message-header">
+                            <h3>Attendance Update</h3>
+                            <span class="message-date">March 18, 2024</span>
+                        </div>
+                        <p><strong>From:</strong> Mrs. Sarah Parker</p>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="viewMessage('message-attendance')">
+                                <i class="fas fa-envelope-open"></i> Read
+                            </button>
+                            <button class="btn btn-secondary" onclick="replyToMessage('message-attendance')">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card unread" id="message-science-club">
+                        <div class="message-header">
+                            <h3>Science Club Competition</h3>
+                            <span class="message-date">March 16, 2024</span>
+                        </div>
+                        <p><strong>From:</strong> Dr. Robert Chen</p>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="viewMessage('message-science-club')">
+                                <i class="fas fa-envelope-open"></i> Read
+                            </button>
+                            <button class="btn btn-secondary" onclick="replyToMessage('message-science-club')">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card read" id="message-career-day">
+                        <div class="message-header">
+                            <h3>Career Day Invitation</h3>
+                            <span class="message-date">March 15, 2024</span>
+                        </div>
+                        <p><strong>From:</strong> Ms. Emily Brooks</p>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="viewMessage('message-career-day')">
+                                <i class="fas fa-envelope-open"></i> Read
+                            </button>
+                            <button class="btn btn-secondary" onclick="replyToMessage('message-career-day')">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Message Modal -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title"></h3>
+                <button class="close-modal" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="message-info">
+                    <p><strong>From:</strong> <span id="modal-from"></span></p>
+                    <p><strong>Date:</strong> <span id="modal-date"></span></p>
+                </div>
+                <div class="message-content" id="modal-content">
+                </div>
+                <div class="message-attachments" id="modal-attachments">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+                <button class="btn btn-primary" onclick="replyToMessage()">
+                    <i class="fas fa-reply"></i> Reply
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div id="reply-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reply to Message</h3>
+                <button class="close-modal" onclick="closeReplyModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="reply-info">
+                    <p><strong>To:</strong> <span id="reply-to"></span></p>
+                    <p><strong>Subject:</strong> Re: <span id="reply-subject"></span></p>
+                </div>
+                <div class="form-group">
+                    <label for="reply-message">Message:</label>
+                    <textarea id="reply-message" rows="6" class="form-input" placeholder="Type your reply here..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeReplyModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-primary" onclick="sendReply()">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/parent-api.js"></script>
+    <script type="module" src="js/parent-ui.js"></script>
+    <script>
+        // Logout functionality
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Add loading state
+                const logoutBtn = document.querySelector('.btn-logout');
+                logoutBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Logging out...';
+                logoutBtn.disabled = true;
+
+                // Simulate logout process (replace with actual logout API call)
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

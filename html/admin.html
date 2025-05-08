@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - School Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%236a0dad' width='100' height='100' rx='50'/><text fill='%23ffffff' font-family='sans-serif' font-size='60' x='50' y='68' text-anchor='middle'>🎒</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1>
+                    <i class="fas fa-school"></i>
+                    School Management System
+                </h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div id="userAvatar" class="avatar"></div>
+                    <span id="userName"></span>
+                </div>
+                <button id="logoutBtn" class="btn btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <button class="tab-btn active" data-tab="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </button>
+            <button class="tab-btn" data-tab="students">
+                <i class="fas fa-user-graduate"></i>
+                Students
+            </button>
+            <button class="tab-btn" data-tab="teachers">
+                <i class="fas fa-chalkboard-teacher"></i>
+                Teachers
+            </button>
+            <button class="tab-btn" data-tab="parents">
+                <i class="fas fa-users"></i>
+                Parents
+            </button>
+            <button class="tab-btn" data-tab="classes">
+                <i class="fas fa-chalkboard"></i>
+                Classes
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-stats grid grid-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Students</h3>
+                            <p id="totalStudents">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Teachers</h3>
+                            <p id="totalTeachers">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Parents</h3>
+                            <p id="totalParents">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Classes</h3>
+                            <p id="totalClasses">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Tab -->
+            <div id="students" class="tab-content">
+                <div class="content-header">
+                    <h2>Student Management</h2>
+                    <button onclick="AdminUI.showAddStudentModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Student
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Grade</th>
+                                <th>Section</th>
+                                <th>Contact</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Teachers Tab -->
+            <div id="teachers" class="tab-content">
+                <div class="content-header">
+                    <h2>Teacher Management</h2>
+                    <button onclick="AdminUI.showAddTeacherModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Teacher
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Subject</th>
+                                <th>Contact</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Parents Tab -->
+            <div id="parents" class="tab-content">
+                <div class="content-header">
+                    <h2>Parent Management</h2>
+                    <button onclick="AdminUI.showAddParentModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Parent
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Students</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="parentsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Classes Tab -->
+            <div id="classes" class="tab-content">
+                <div class="content-header">
+                    <h2>Class Management</h2>
+                    <button onclick="AdminUI.showAddClassModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Class
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Teacher</th>
+                                <th>Grade</th>
+                                <th>Section</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="classesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="studentModalTitle">Add Student</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="studentForm" class="form-grid">
+                    <div class="input-group">
+                        <label for="studentFullName">Full Name</label>
+                        <input type="text" id="studentFullName" required autocomplete="name">
+                    </div>
+                    <div class="input-group">
+                        <label for="studentEmail">Email</label>
+                        <input type="email" id="studentEmail" required autocomplete="email">
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    <div class="input-group">
+                        <label for="studentGrade">Grade</label>
+                        <input type="text" id="studentGrade" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="studentSection">Section</label>
+                        <input type="text" id="studentSection" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="studentContact">Contact</label>
+                        <input type="tel" id="studentContact" autocomplete="tel">
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+                    <div class="input-group">
+                        <label for="studentPassword">Password</label>
+                        <input type="password" id="studentPassword" autocomplete="new-password">
+                        <i class="fas fa-lock input-icon"></i>
+                        <small>Leave blank to keep existing password when editing</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="AdminUI.closeStudentModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AdminUI.saveStudent()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Teacher Modal -->
+    <div id="teacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="teacherModalTitle">Add Teacher</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="teacherForm" class="form-grid">
+                    <div class="input-group">
+                        <label for="teacherFullName">Full Name</label>
+                        <input type="text" id="teacherFullName" required autocomplete="name">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherEmail">Email</label>
+                        <input type="email" id="teacherEmail" required autocomplete="email">
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherSubject">Subject</label>
+                        <input type="text" id="teacherSubject" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherContact">Contact</label>
+                        <input type="tel" id="teacherContact" autocomplete="tel">
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherPassword">Password</label>
+                        <input type="password" id="teacherPassword" autocomplete="new-password">
+                        <i class="fas fa-lock input-icon"></i>
+                        <small>Leave blank to keep existing password when editing</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="AdminUI.closeTeacherModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AdminUI.saveTeacher()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Parent Modal -->
+    <div id="parentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="parentModalTitle">Add Parent</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="parentForm" class="form-grid">
+                    <div class="input-group">
+                        <label for="parentFullName">Full Name</label>
+                        <input type="text" id="parentFullName" required autocomplete="name">
+                    </div>
+                    <div class="input-group">
+                        <label for="parentEmail">Email</label>
+                        <input type="email" id="parentEmail" required autocomplete="email">
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    <div class="input-group">
+                        <label for="parentContact">Contact</label>
+                        <input type="tel" id="parentContact" autocomplete="tel">
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+                    <div class="input-group">
+                        <label for="parentPassword">Password</label>
+                        <input type="password" id="parentPassword" autocomplete="new-password">
+                        <i class="fas fa-lock input-icon"></i>
+                        <small>Leave blank to keep existing password when editing</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="AdminUI.closeParentModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AdminUI.saveParent()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Class Modal -->
+    <div id="classModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="classModalTitle">Add Class</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="classForm" class="form-grid">
+                    <div class="input-group">
+                        <label for="className">Class Name</label>
+                        <input type="text" id="className" required autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="classTeacher">Teacher</label>
+                        <select id="classTeacher" required></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="classGrade">Grade</label>
+                        <input type="text" id="classGrade" required autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="classSection">Section</label>
+                        <input type="text" id="classSection" required autocomplete="off">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="AdminUI.closeClassModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AdminUI.saveClass()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link Parent-Student Modal -->
+    <div id="linkParentStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Link Students to Parent</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Available Students</label>
+                    <select id="availableStudents" multiple></select>
+                </div>
+                <div class="input-group">
+                    <label>Linked Students</label>
+                    <select id="linkedStudents" multiple></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="AdminUI.closeLinkParentStudentModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="AdminUI.saveLinkParentStudent()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
